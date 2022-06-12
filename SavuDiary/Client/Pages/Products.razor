@@ -1,0 +1,40 @@
+﻿@page "/products"
+@inject HttpClient httpClient
+@inject NavigationManager navigator
+<h3>
+    Products >>
+    <a href="product" type="button" class="btn btn-primary" >
+        Create
+    </a>
+</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Code</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ListOfProducts)
+        {
+            <tr @onclick='()=> navigator.NavigateTo($"/product/{item.Id}")'>
+                <td>@item.Name</td>
+                <td>@item.Code</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@code {
+    protected List<Product> ListOfProducts = new List<Product>();
+    protected bool ShowModal = false;
+    protected override async Task OnInitializedAsync()
+    {
+        var list = await httpClient.GetFromJsonAsync<List<Product>>("/api/Product");
+        if (list != null)
+        {
+            ListOfProducts = list;
+        }
+    }
+    
+}

@@ -3,3 +3,11 @@
 ################################################################################
 
 /.vs/SavuDiary
+/SavuDiary/Client/bin/Debug/net6.0
+/SavuDiary/Client/obj
+/SavuDiary/Server/bin/Debug/net6.0
+/SavuDiary/Server/obj
+/SavuDiary/Shared/bin/Debug/net6.0
+/SavuDiary/Shared/obj
+/SavuDiary.Server.DataLayers/bin/Debug/net6.0
+/SavuDiary.Server.DataLayers/obj

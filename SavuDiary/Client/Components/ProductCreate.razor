@@ -1,0 +1,81 @@
+﻿@page "/product"
+@page "/product/{id:guid}"
+@inject HttpClient httpClient
+@inject NavigationManager navigator
+<h3>Product Create</h3>
+<EditForm Model="@product" OnValidSubmit="@OnSumbited">
+     <DataAnnotationsValidator></DataAnnotationsValidator>
+    <div class="col-3">
+        <div class="form-group">
+            <label for="Name">Name</label>
+            <InputText class="form-control" @bind-Value="product.Name"></InputText>
+            <ValidationMessage For="()=>product.Name"></ValidationMessage>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="form-group">
+            <label for="Code">Code</label>
+            <InputText class="form-control" @bind-Value="product.Code"></InputText>
+             <ValidationMessage For="()=>product.Code"></ValidationMessage>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="form-group">
+            <label for="Description">Description</label>
+            <InputTextArea class="form-control" @bind-Value="product.Description"></InputTextArea>
+             <ValidationMessage For="()=>product.Description"></ValidationMessage>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="form-group">
+            <label for="Unit">Unit</label>
+            <InputText class="form-control" @bind-Value="product.Unit"></InputText>
+             <ValidationMessage For="()=>product.Unit"></ValidationMessage>
+        </div>
+    </div>
+   <button class="btn btn-primary" type="submit"> Submit</button>
+</EditForm>
+@code {
+    [Parameter]
+    public Guid id { get; set; }
+
+    public Product product { get; set; } = new Product();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != Guid.Empty)
+        {
+            var prod = await httpClient.GetFromJsonAsync<Product>($"/api/Product/{id}");
+            if (prod != null)
+            {
+                product = prod;
+            }
+        }
+    }
+
+    protected async Task OnSumbited()
+    {
+        if (id != Guid.Empty)
+        {
+             var res = await httpClient.PutAsJsonAsync<Product>($"/api/Product/{id}", product);
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    navigator.NavigateTo("/products");
+                }
+            }
+        }
+        else
+        {
+            var res = await httpClient.PostAsJsonAsync<Product>("/api/Product", product);
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    navigator.NavigateTo("/products");
+                }
+            }
+        }
+    }
+}

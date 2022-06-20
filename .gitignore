@@ -13,3 +13,6 @@
 /SavuDiary.Server.DataLayers/obj
 /.vs/ProjectEvaluation
 /SavuDiary.UI/SavuDiary.UI/obj
+/SavuDiary.UI/SavuDiary.UI/bin/Debug
+/SavuDiary.UI.Common/bin/Debug/net6.0
+/SavuDiary.UI.Common/obj

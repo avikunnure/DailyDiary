@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SavuDiary.Shared", "SavuDia
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SavuDiary.Server.DataLayers", "SavuDiary.Server.DataLayers\SavuDiary.Server.DataLayers.csproj", "{5A75BD88-ACE9-4E68-8F59-8088CB6DDE47}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SavuDiary.UI", "SavuDiary.UI\SavuDiary.UI\SavuDiary.UI.csproj", "{E36CFC7A-2FF7-46B1-9286-D9CB938D4CEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,12 @@ Global
 		{5A75BD88-ACE9-4E68-8F59-8088CB6DDE47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A75BD88-ACE9-4E68-8F59-8088CB6DDE47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A75BD88-ACE9-4E68-8F59-8088CB6DDE47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E36CFC7A-2FF7-46B1-9286-D9CB938D4CEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E36CFC7A-2FF7-46B1-9286-D9CB938D4CEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E36CFC7A-2FF7-46B1-9286-D9CB938D4CEB}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{E36CFC7A-2FF7-46B1-9286-D9CB938D4CEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E36CFC7A-2FF7-46B1-9286-D9CB938D4CEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E36CFC7A-2FF7-46B1-9286-D9CB938D4CEB}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

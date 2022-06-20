@@ -1,0 +1,43 @@
+﻿@inject ToasterServices toster;
+
+<div aria-live="polite" style="z-index:1000;" aria-atomic="true" class="position-relative">
+    
+    <div class="toast-container position-absolute top-0 end-0 p-3">
+
+        @foreach (var item in ListOfToasters.ToasterItems.Where(x => x.IsVisible))
+        {
+            var bgcolor = "text-" + item.ToastLevel.ToString().ToLower();
+            <div class="toast showing" style="z-index:1000;" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header ">
+                    <strong class="me-auto @bgcolor">@item.ToastLevel.ToString()</strong>
+                    <small class="text-muted">@(item.dateTime.ToLocalTime())</small>
+                    <button type="button" class="btn-close" style="z-index:1000;" data-bs-dismiss="toast" @onclick='()=> {item.IsVisible=false; StateHasChanged(); }' aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    @item.Text
+                </div>
+            </div>
+
+        }
+    </div>
+</div>
+@code {
+    System.Timers.Timer timer = new System.Timers.Timer(5000);
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
+    protected override void OnParametersSet()
+    {
+        toster.UpdateListEvents +=()=> StateHasChanged();
+        base.OnParametersSet();
+    }
+    protected override Task OnInitializedAsync()
+    {
+        timer.Elapsed += (o, s) => toster.RemoveInActive();
+        timer.Start();
+        return base.OnInitializedAsync();
+    }
+    
+}

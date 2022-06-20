@@ -1,0 +1,108 @@
+﻿@page "/customer"
+@page "/customer/{id:guid}"
+@inject HttpClient httpClient
+@inject NavigationManager navigator
+
+
+<div class="card">
+    <EditForm Model="@model" OnValidSubmit="@OnSumbited">
+        <div class="card-header">
+            <div class="col-6">
+                <button class="btn btn-primary " type="submit"> Submit</button>
+                <a href="customers" type="button" class="btn btn-info">
+                    List
+                </a>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <div class="row">
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputText placeholder="FirstName" class="form-control" @bind-Value="model.FirstName"></InputText>
+                        <label for="FirstName">First Name</label>
+                        <ValidationMessage For="()=>model.FirstName"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputText placeholder="LastName" class="form-control" @bind-Value="model.LastName"></InputText>
+                        <label for="LastName">Last Name</label>
+                        <ValidationMessage For="()=>model.LastName"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputNumber placeholder="SequenceNo" class="form-control" @bind-Value="model.SequenceNo"></InputNumber>
+                        <label for="SequenceNo">Sequence No</label>
+                        <ValidationMessage For="()=>model.SequenceNo"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputText placeholder="MobileNo" class="form-control" @bind-Value="model.MobileNo"></InputText>
+                        <label for="MobileNo">Mobile No</label>
+                        <ValidationMessage For="()=>model.MobileNo"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputText placeholder="EmailId" class="form-control" @bind-Value="model.EmailId"></InputText>
+                        <label for="EmailId">EmailId</label>
+                        <ValidationMessage For="()=>model.EmailId"></ValidationMessage>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="card-footer"></div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public Guid id{ get; set; }
+
+    public Customer model { get; set; } = new Customer();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != Guid.Empty)
+        {
+            var cust = await httpClient.GetFromJsonAsync<Customer>($"/api/Customer/{id}");
+            if (cust != null)
+            {
+                model = cust;
+            }
+        }
+    }
+
+    protected async Task OnSumbited()
+    {
+        if (id != Guid.Empty)
+        {
+            var res = await httpClient.PutAsJsonAsync<Customer>($"/api/Customer/{id}", model);
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    toaster.ShowToaster("Saved Successfully", ToastLevel.Success);
+                    navigator.NavigateTo("/Customers");
+                }
+            }
+        }
+        else
+        {
+            var res = await httpClient.PostAsJsonAsync<Customer>("/api/Customer", model);
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    toaster.ShowToaster("Saved Successfully", ToastLevel.Success);
+                    navigator.NavigateTo("/Customers");
+                }
+            }
+        }
+    }
+}

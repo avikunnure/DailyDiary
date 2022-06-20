@@ -2,39 +2,53 @@
 @page "/product/{id:guid}"
 @inject HttpClient httpClient
 @inject NavigationManager navigator
-<h3>Product Create</h3>
-<EditForm Model="@product" OnValidSubmit="@OnSumbited">
-     <DataAnnotationsValidator></DataAnnotationsValidator>
-    <div class="col-3">
-        <div class="form-group">
-            <label for="Name">Name</label>
-            <InputText class="form-control" @bind-Value="product.Name"></InputText>
-            <ValidationMessage For="()=>product.Name"></ValidationMessage>
+<div class="card">
+    <EditForm Model="@product" OnValidSubmit="@OnSumbited">
+        <div class="card-header">
+            <div class="col-6">
+                <button class="btn btn-primary " type="submit"> Submit</button>
+                <a href="products" type="button" class="btn btn-info">
+                    List
+                </a>
+            </div>
+
         </div>
-    </div>
-    <div class="col-3">
-        <div class="form-group">
-            <label for="Code">Code</label>
-            <InputText class="form-control" @bind-Value="product.Code"></InputText>
-             <ValidationMessage For="()=>product.Code"></ValidationMessage>
+        <div class="card-body">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <div class="row">
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputText placeholder="Name" class="form-control" @bind-Value="product.Name"></InputText>
+                        <label for="Name">Name</label>
+                        <ValidationMessage For="()=>product.Name"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputText placeholder="Code" class="form-control" @bind-Value="product.Code"></InputText>
+                        <label for="Code">Code</label>
+                        <ValidationMessage For="()=>product.Code"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputText placeholder="Unit" class="form-control" @bind-Value="product.Unit"></InputText>
+                        <label for="Unit">Unit</label>
+                        <ValidationMessage For="()=>product.Unit"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputTextArea placeholder="Description" class="form-control" @bind-Value="product.Description"></InputTextArea>
+                        <label for="Description">Description</label>
+                        <ValidationMessage For="()=>product.Description"></ValidationMessage>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="col-3">
-        <div class="form-group">
-            <label for="Description">Description</label>
-            <InputTextArea class="form-control" @bind-Value="product.Description"></InputTextArea>
-             <ValidationMessage For="()=>product.Description"></ValidationMessage>
-        </div>
-    </div>
-    <div class="col-3">
-        <div class="form-group">
-            <label for="Unit">Unit</label>
-            <InputText class="form-control" @bind-Value="product.Unit"></InputText>
-             <ValidationMessage For="()=>product.Unit"></ValidationMessage>
-        </div>
-    </div>
-   <button class="btn btn-primary" type="submit"> Submit</button>
-</EditForm>
+        <div class="card-footer"></div>
+    </EditForm>
+</div>
 @code {
     [Parameter]
     public Guid id { get; set; }
@@ -57,11 +71,12 @@
     {
         if (id != Guid.Empty)
         {
-             var res = await httpClient.PutAsJsonAsync<Product>($"/api/Product/{id}", product);
+            var res = await httpClient.PutAsJsonAsync<Product>($"/api/Product/{id}", product);
             if (res != null)
             {
                 if (res.IsSuccessStatusCode)
                 {
+                    toaster.ShowToaster("Saved Successfully", ToastLevel.Success);
                     navigator.NavigateTo("/products");
                 }
             }
@@ -73,6 +88,7 @@
             {
                 if (res.IsSuccessStatusCode)
                 {
+                    toaster.ShowToaster("Saved Successfully", ToastLevel.Success);
                     navigator.NavigateTo("/products");
                 }
             }

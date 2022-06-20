@@ -12,6 +12,6 @@ namespace SavuDiary.Shared
         public Decimal NetAmount { get; set; }
 
         [NotMapped]
-        public string ProductName { get; set; }
+        public string ProductName { get; set; } = "";
     }
 }

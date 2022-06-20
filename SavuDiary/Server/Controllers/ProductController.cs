@@ -22,7 +22,7 @@ namespace SavuDiary.Server.Controllers
             {
                var result= await _productRepository.GetAll();
                 return Ok(result.Select(x=>(Shared.Product)x));
-            }catch (Exception ex)
+            }catch (Exception)
             {
                 throw;
             }
@@ -34,10 +34,10 @@ namespace SavuDiary.Server.Controllers
         {
             try
             {
-                var result =(Shared.Product) await _productRepository.GetById(id);
+                var result =await _productRepository.GetById(id);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -52,7 +52,7 @@ namespace SavuDiary.Server.Controllers
                 var result = await _productRepository.Insert((ProductEntity) product);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -67,7 +67,7 @@ namespace SavuDiary.Server.Controllers
                 var result = await _productRepository.Update((ProductEntity) product);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -83,7 +83,7 @@ namespace SavuDiary.Server.Controllers
                 var result = await _productRepository.Delete(product);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

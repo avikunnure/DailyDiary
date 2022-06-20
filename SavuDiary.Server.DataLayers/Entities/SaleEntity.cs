@@ -5,6 +5,8 @@ namespace SavuDiary.Server.DataLayers
 {
     public class SaleEntity:BaseEntity
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long SaleNo { get; set; }
         public DateTime SaleDateTime { get; set; }
         public Guid CustomerId { get; set; }
         public Decimal SaleAmount { get; set; }
@@ -12,10 +14,10 @@ namespace SavuDiary.Server.DataLayers
         public Decimal NetAmount { get; set; }
         public bool IsReturn { get; set; }
         public bool ReturnReasons { get; set; }
-        public string Notes { get; set; }
+        public string Notes { get; set; } = "";
 
         [NotMapped]
-        public string CustomerName { get; set; }
+        public string CustomerName { get; set; } = "";
 
         public static implicit operator SaleEntity(Sale sale)
         {
@@ -32,6 +34,7 @@ namespace SavuDiary.Server.DataLayers
                 CustomerId = sale.CustomerId,
                 Id = sale.Id,
                 IsActive = sale.IsActive,
+                SaleNo=sale.SaleNo,
             };
         }
         public static implicit operator Sale(SaleEntity sale)
@@ -49,6 +52,7 @@ namespace SavuDiary.Server.DataLayers
                 CustomerId = sale.CustomerId,
                 Id = sale.Id,
                 IsActive = sale.IsActive,
+                SaleNo=sale.SaleNo,
             };
         }
     }

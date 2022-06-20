@@ -1,0 +1,51 @@
+﻿@page "/sales"
+@inject HttpClient httpClient
+@inject NavigationManager nagivator
+<h3>Sales</h3>
+<div class="card">
+    <div class="card-header">
+        <div class="col-2">
+            Sales >>
+            <a href="sale" type="button" class="btn btn-primary">
+                Create
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Sale No</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ListOfSales)
+                {
+                    <tr @onclick='()=>nagivator.NavigateTo($"/sale/{item.Id}")'>
+                        <td>
+                            @($"{item.CustomerName}")
+                        </td>
+                        <td>@item.SaleNo</td>
+                        <td>@item.SaleDateTime</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@code {
+    protected List<Sale> ListOfSales { get; set; } = new List<Sale>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var cust = await httpClient.GetFromJsonAsync<List<Sale>>("/api/Sale");
+        if (cust != null)
+        {
+            ListOfSales = cust;
+        }
+
+    }
+}

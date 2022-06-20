@@ -13,7 +13,7 @@ namespace SavuDiary.Server.DataLayers
         public Decimal NetAmount { get; set; }
 
         [NotMapped]
-        public string ProductName { get; set; }
+        public string ProductName { get; set; } = "";
 
         public static implicit operator SaleDetailEntity(SaleDetail saleDetail)
         {

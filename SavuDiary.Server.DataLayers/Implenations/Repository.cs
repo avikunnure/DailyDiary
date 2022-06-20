@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace SavuDiary.Server.DataLayers
 {
-    public class Repository<T> : IRepository<T> where T : BaseEntity
+    public class Repository<T> : IRepository<T> where T : BaseEntity,new()
     {
         private SavuDiaryDBContext Context { get; }
         public Repository(SavuDiaryDBContext context)
@@ -25,15 +25,21 @@ namespace SavuDiary.Server.DataLayers
 
         public async Task<T> Update(T entity)
         {
-            Context.Update(entity);
-            await Context.SaveChangesAsync();
+            if (entity.Id != Guid.Empty)
+            {
+                Context.Update(entity);
+                await Context.SaveChangesAsync();
+            }
             return entity;
         }
         public async Task<T> Delete(T entity)
         {
-            entity.IsActive = false;
-            Context.Update(entity);
-            await Context.SaveChangesAsync();
+            if (entity.Id != Guid.Empty)
+            {
+                entity.IsActive = false;
+                Context.Update(entity);
+                await Context.SaveChangesAsync();
+            }
             return  entity;    
         }
 
@@ -44,7 +50,13 @@ namespace SavuDiary.Server.DataLayers
 
         public Task<T> GetById(Guid id)
         {
-            return Task.FromResult(Context.Set<T>().Where(x => x.Id == id).AsNoTracking().FirstOrDefault());
+            var res= Context.Set<T>().Where(x => x.Id == id).AsNoTracking().FirstOrDefault();
+            if (res != null)
+            {
+                return Task.FromResult(res);
+                
+            }
+           return Task.FromResult(new T());
         }
     }
 }

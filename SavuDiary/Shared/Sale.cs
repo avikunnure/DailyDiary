@@ -4,6 +4,7 @@ namespace SavuDiary.Shared
 {
     public class Sale:Base
     {
+        public long SaleNo { get; set; }
         public DateTime SaleDateTime { get; set; }
         public Guid CustomerId { get; set; }
         public Decimal SaleAmount { get; set; }
@@ -11,9 +12,12 @@ namespace SavuDiary.Shared
         public Decimal NetAmount { get; set; }
         public bool IsReturn { get; set; }
         public bool ReturnReasons { get; set; }
-        public string Notes { get; set; }
+        public string Notes { get; set; } = "";
 
         [NotMapped]
-        public string CustomerName { get; set; }
+        public string CustomerName { get; set; } = "";
+
+        public List<SaleDetail> SaleDetailsList { get; set; } = new List<SaleDetail>();
+       
     }
 }

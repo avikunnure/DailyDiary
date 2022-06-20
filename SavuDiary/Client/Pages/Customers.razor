@@ -1,0 +1,51 @@
+﻿@page "/customers"
+@inject HttpClient httpClient
+@inject NavigationManager nagivator
+<div class="card">
+    <div class="card-header">
+        <div class="col-2">
+            Customers >>
+            <a href="customer" type="button" class="btn btn-primary">
+                Create
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Sequence No</th>
+                    <th>Mobile No</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ListOfCustomers)
+               {
+                   <tr @onclick='()=>nagivator.NavigateTo($"/customer/{item.Id}")'>
+                       <td>
+                           @($"{item.FirstName} {item.LastName}")
+                       </td>
+                       <td>@item.SequenceNo</td>
+                       <td>@item.MobileNo</td>
+                   </tr>
+               }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    protected List<Customer> ListOfCustomers { get; set; } = new List<Customer>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var cust =await httpClient.GetFromJsonAsync<List<Customer>>("/api/Customer");
+        if(cust!=null)
+        {
+            ListOfCustomers = cust;
+        }
+        
+    }
+}

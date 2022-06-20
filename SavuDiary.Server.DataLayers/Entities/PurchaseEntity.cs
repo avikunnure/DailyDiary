@@ -10,10 +10,10 @@ namespace SavuDiary.Server.DataLayers
         public Decimal Amount { get; set; }
         public Decimal DiscountAmount { get; set; }
         public Decimal NetAmount { get; set; }
-        public string Notes { get; set; }
+        public string Notes { get; set; } = "";
 
         [NotMapped]
-        public string CustomerName { get; set; }
+        public string CustomerName { get; set; } = "";
 
         public static implicit operator PurchaseEntity(Purchase purchase)
         {

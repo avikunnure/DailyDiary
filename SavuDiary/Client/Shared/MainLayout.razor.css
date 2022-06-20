@@ -79,3 +79,10 @@ main {
         padding-right: 1.5rem !important;
     }
 }
+
+.card-body{
+    min-height:200px !important;
+    max-height:600px !important;
+    overflow:scroll !important;
+
+}

@@ -25,6 +25,7 @@ namespace SavuDiary.Server.DataLayers
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

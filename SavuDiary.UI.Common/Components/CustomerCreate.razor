@@ -1,6 +1,6 @@
 ﻿@page "/customer"
 @page "/customer/{id:guid}"
-@inject HttpClient httpClient
+@inject IDataServices<Customer> dataServices
 @inject NavigationManager navigator
 
 
@@ -70,7 +70,7 @@
     {
         if (id != Guid.Empty)
         {
-            var cust = await httpClient.GetFromJsonAsync<Customer>($"/api/Customer/{id}");
+            var cust = await dataServices.Get(new DataParams( "",id));
             if (cust != null)
             {
                 model = cust;
@@ -82,7 +82,7 @@
     {
         if (id != Guid.Empty)
         {
-            var res = await httpClient.PutAsJsonAsync<Customer>($"/api/Customer/{id}", model);
+            var res = await dataServices.Put(model,new DataParams("",id));
             if (res != null)
             {
                 if (res.IsSuccessStatusCode)
@@ -94,7 +94,7 @@
         }
         else
         {
-            var res = await httpClient.PostAsJsonAsync<Customer>("/api/Customer", model);
+            var res = await dataServices.Post( model);
             if (res != null)
             {
                 if (res.IsSuccessStatusCode)

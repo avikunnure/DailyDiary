@@ -1,6 +1,6 @@
 ﻿@page "/product"
 @page "/product/{id:guid}"
-@inject HttpClient httpClient
+@inject IDataServices<Product> dataServices
 @inject NavigationManager navigator
 <div class="card">
     <EditForm Model="@product" OnValidSubmit="@OnSumbited">
@@ -59,7 +59,7 @@
     {
         if (id != Guid.Empty)
         {
-            var prod = await httpClient.GetFromJsonAsync<Product>($"/api/Product/{id}");
+            var prod = await dataServices.Get(new DataParams("", id ));
             if (prod != null)
             {
                 product = prod;
@@ -71,7 +71,7 @@
     {
         if (id != Guid.Empty)
         {
-            var res = await httpClient.PutAsJsonAsync<Product>($"/api/Product/{id}", product);
+            var res = await dataServices.Put(product, new DataParams("", id));
             if (res != null)
             {
                 if (res.IsSuccessStatusCode)
@@ -83,7 +83,7 @@
         }
         else
         {
-            var res = await httpClient.PostAsJsonAsync<Product>("/api/Product", product);
+            var res = await dataServices.Post(product);
             if (res != null)
             {
                 if (res.IsSuccessStatusCode)

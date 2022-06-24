@@ -1,5 +1,5 @@
 ﻿@page "/products"
-@inject HttpClient httpClient
+@inject IDataServices<Product> dataServices
 @inject NavigationManager navigator
 <div class="card">
     <div class="card-header">
@@ -36,10 +36,10 @@
     protected bool ShowModal = false;
     protected override async Task OnInitializedAsync()
     {
-        var list = await httpClient.GetFromJsonAsync<List<Product>>("/api/Product");
+        var list = await dataServices.GetAll();
         if (list != null)
         {
-            ListOfProducts = list;
+            ListOfProducts = list.ToList();
         }
     }
 

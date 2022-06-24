@@ -1,6 +1,7 @@
 ﻿@page "/sale"
 @page "/sale/{id:guid?}/{customerno:long?}"
-@inject HttpClient httpClient
+@inject IDataServices<Customer> custDataServices
+@inject IDataServices<Sale> saleDataServices
 @inject NavigationManager navigator
 <div class="row">
     <div class="col-6">
@@ -69,7 +70,7 @@
     {
         if (id != Guid.Empty)
         {
-            var sale = await httpClient.GetFromJsonAsync<Sale>($"/api/Sale/{id}");
+            var sale = await saleDataServices.Get(new DataParams("",id));
             if (sale != null)
             {
                 model = sale;
@@ -79,10 +80,10 @@
         {
 
         }
-        var cust = await httpClient.GetFromJsonAsync<List<Customer>>("/api/Customer");
+        var cust = await custDataServices.GetAll();
         if (cust != null)
         {
-            customers = cust;
+            customers = cust.ToList();
         }
     }
 
@@ -90,7 +91,7 @@
     {
         if (id != Guid.Empty)
         {
-            var res = await httpClient.PutAsJsonAsync<Sale>($"/api/Sale/{id}", model);
+            var res = await saleDataServices.Put(model);
             if (res != null)
             {
                 if (res.IsSuccessStatusCode)
@@ -102,7 +103,7 @@
         }
         else
         {
-            var res = await httpClient.PostAsJsonAsync<Sale>("/api/Sale", model);
+            var res = await saleDataServices.Post(model);
             if (res != null)
             {
                 if (res.IsSuccessStatusCode)

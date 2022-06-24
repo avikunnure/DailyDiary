@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.WebView.Maui;
-using SavuDiary.UI.Data;
+using SavuDiary.UI;
 
 namespace SavuDiary.UI
 {
@@ -20,8 +20,10 @@ namespace SavuDiary.UI
 		builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
 
-            builder.Services.AddSingleton<WeatherForecastService>();
+            builder.Services.AddSingleton(typeof(SavuDiary.Client.Components.ToasterServices), typeof(SavuDiary.Client.Components.ToasterServices));
+            builder.Services.AddDataServices();
 
+           
             return builder.Build();
         }
     }

@@ -11,9 +11,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SavuDiary.Shared", "SavuDia
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SavuDiary.Server.DataLayers", "SavuDiary.Server.DataLayers\SavuDiary.Server.DataLayers.csproj", "{5A75BD88-ACE9-4E68-8F59-8088CB6DDE47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SavuDiary.UI", "SavuDiary.UI\SavuDiary.UI\SavuDiary.UI.csproj", "{E36CFC7A-2FF7-46B1-9286-D9CB938D4CEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SavuDiary.UI", "SavuDiary.UI\SavuDiary.UI\SavuDiary.UI.csproj", "{E36CFC7A-2FF7-46B1-9286-D9CB938D4CEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SavuDiary.UI.Common", "SavuDiary.UI.Common\SavuDiary.UI.Common.csproj", "{7E16D602-339A-4637-9A66-3FA85A694584}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SavuDiary.UI.Common", "SavuDiary.UI.Common\SavuDiary.UI.Common.csproj", "{7E16D602-339A-4637-9A66-3FA85A694584}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MobileApp", "MobileApp", "{3E3C7AA0-FE84-4036-AE04-3BAF29B7F676}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApplications", "WebApplications", "{C5013287-8A52-4A1F-8219-35CB4E665DDF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{FC50C028-90AD-465F-BA59-7E9EF0E2ECA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +56,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{937DD08C-DAEE-4210-AB3E-15BED6C7A02C} = {C5013287-8A52-4A1F-8219-35CB4E665DDF}
+		{C381A3DC-C72A-41A4-8593-F4BCF5CA1B45} = {C5013287-8A52-4A1F-8219-35CB4E665DDF}
+		{94E14532-E9D3-4044-A710-62A0A9F17450} = {FC50C028-90AD-465F-BA59-7E9EF0E2ECA4}
+		{5A75BD88-ACE9-4E68-8F59-8088CB6DDE47} = {FC50C028-90AD-465F-BA59-7E9EF0E2ECA4}
+		{E36CFC7A-2FF7-46B1-9286-D9CB938D4CEB} = {3E3C7AA0-FE84-4036-AE04-3BAF29B7F676}
+		{7E16D602-339A-4637-9A66-3FA85A694584} = {FC50C028-90AD-465F-BA59-7E9EF0E2ECA4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {461DE869-82DD-49ED-97B3-BACBABA3268F}

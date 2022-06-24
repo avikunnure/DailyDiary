@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 namespace SavuDiary.Server.DataLayers
 {
-    public class SavuDiaryDBContext : DbContext
+    public class SavuDiaryDBContext : Microsoft.EntityFrameworkCore.DbContext
     {
         public DbSet<ProductEntity> Products { get; set; }
         public DbSet<CustomerEntity> Customers { get; set; }

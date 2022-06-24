@@ -1,5 +1,5 @@
 ﻿@page "/customers"
-@inject HttpClient httpClient
+@inject IDataServices<Customer> dataServices
 @inject NavigationManager nagivator
 <div class="card">
     <div class="card-header">
@@ -41,10 +41,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var cust =await httpClient.GetFromJsonAsync<List<Customer>>("/api/Customer");
+        var cust = await dataServices.GetAll();
         if(cust!=null)
         {
-            ListOfCustomers = cust;
+            ListOfCustomers = cust.ToList();
         }
         
     }

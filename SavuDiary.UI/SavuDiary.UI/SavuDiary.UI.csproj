@@ -54,6 +54,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\SavuDiary.Server.DataLayers\SavuDiary.Server.DataLayers.csproj" />
 	  <ProjectReference Include="..\..\SavuDiary.UI.Common\SavuDiary.UI.Common.csproj" />
 	</ItemGroup>
 

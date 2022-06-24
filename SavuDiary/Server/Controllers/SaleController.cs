@@ -10,9 +10,10 @@ namespace SavuDiary.Server.Controllers
         private IRepository<SaleEntity> _saleRepository;
         private IRepository<SaleEntry> _Repository;
 
-        public SaleController(IRepository<SaleEntity> saleRepository)
+        public SaleController(IRepository<SaleEntity> saleRepository, IRepository<SaleEntry> repository)
         {
             _saleRepository = saleRepository;
+            _Repository = repository;
         }
 
         // GET: api/<SaleController>

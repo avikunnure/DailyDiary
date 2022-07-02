@@ -1,0 +1,49 @@
+﻿@page "/suppliers"
+@inject IDataServices<Supplier> dataServices
+@inject NavigationManager nagivator
+<div class="card">
+    <div class="card-header">
+        <div class="col-12">
+            Suppliers >>
+            <a href="Suppliers/create" type="button" class="btn btn-primary">
+                Create
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Mobile No</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ListOfSuppliers)
+               {
+                   <tr @onclick='()=>nagivator.NavigateTo($"/Suppliers/edit/{item.Id}")'>
+                       <td>
+                           @($"{item.FirstName} {item.LastName}")
+                       </td>
+                       <td>@item.MobileNo</td>
+                   </tr>
+               }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    protected List<Supplier> ListOfSuppliers { get; set; } = new List<Supplier>();
+
+    protected override  async Task OnInitializedAsync()
+    {
+        var cust =await dataServices.GetAll();
+        if(cust.Result!=null)
+        {
+            ListOfSuppliers = cust.Result.ToList();
+        }
+        
+    }
+}

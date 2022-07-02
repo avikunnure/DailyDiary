@@ -1,0 +1,102 @@
+﻿@page "/Suppliers/Create"
+@page "/Suppliers/Edit/{id:guid}"
+@inject IDataServices<Supplier> dataServices
+@inject NavigationManager navigator
+
+
+<div class="card">
+    <EditForm Model="@model" OnValidSubmit="@OnSumbited">
+        <div class="card-header">
+            <div class="col-6">
+                <button class="btn btn-primary " type="submit"> Submit</button>
+                <a href="Suppliers" type="button" class="btn btn-info">
+                    List
+                </a>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <div class="row">
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputText placeholder="FirstName" class="form-control" @bind-Value="model.FirstName"></InputText>
+                        <label for="FirstName">First Name</label>
+                        <ValidationMessage For="()=>model.FirstName"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputText placeholder="LastName" class="form-control" @bind-Value="model.LastName"></InputText>
+                        <label for="LastName">Last Name</label>
+                        <ValidationMessage For="()=>model.LastName"></ValidationMessage>
+                    </div>
+                </div>
+                
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputText placeholder="MobileNo" class="form-control" @bind-Value="model.MobileNo"></InputText>
+                        <label for="MobileNo">Mobile No</label>
+                        <ValidationMessage For="()=>model.MobileNo"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputText placeholder="EmailId" class="form-control" @bind-Value="model.EmailId"></InputText>
+                        <label for="EmailId">EmailId</label>
+                        <ValidationMessage For="()=>model.EmailId"></ValidationMessage>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="card-footer"></div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public Guid id{ get; set; }
+
+    public Supplier model { get; set; } = new Supplier();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != Guid.Empty)
+        {
+            var cust = await dataServices.Get(new DataParams( "",id));
+            if (cust.Result != null)
+            {
+                model = cust.Result;
+            }
+        }
+    }
+
+    protected async Task OnSumbited()
+    {
+        if (id != Guid.Empty)
+        {
+            var res = await dataServices.Put(model,new DataParams("",id));
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    toaster.ShowToaster("Saved Successfully", ToastLevel.Success);
+                    navigator.NavigateTo("/Suppliers");
+                }
+            }
+        }
+        else
+        {
+            var res = await dataServices.Post( model);
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    toaster.ShowToaster("Saved Successfully", ToastLevel.Success);
+                    navigator.NavigateTo("/Suppliers");
+                }
+            }
+        }
+    }
+}

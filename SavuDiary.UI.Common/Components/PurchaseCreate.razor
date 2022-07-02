@@ -1,0 +1,189 @@
+﻿@page "/purchases/Create"
+@page "/purchases/edit/{id:guid?}"
+@inject IDataServices<Supplier> supDataServices
+@inject IDataServices<Purchase> purchaseDataServices
+@inject IDataServices<Product> productServices
+@inject NavigationManager navigator
+
+<div class="card">
+    <EditForm Model="@model" OnValidSubmit="@OnSumbited">
+        <div class="card-header">
+            <div class="col-6">
+                <button class="btn btn-primary " type="submit"> Submit</button>
+                <a href="purchases" type="button" class="btn btn-info">
+                    List
+                </a>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <div class="row">
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 ">
+                    <div class="form-floating mb-3">
+                        <InputDate placeholder="DateTime" class="form-control" @bind-Value="model.DateTime"></InputDate>
+                        <label for="DateTime">DateTime</label>
+                        <ValidationMessage For="()=>model.DateTime"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 ">
+                    <div class="form-floating mb-3">
+                        <InputSelect placeholder="SupplierId" class="form-control" @bind-Value="model.SupplierId">
+                            <option value="@Guid.Empty">
+                                -- None Select --
+                            </option>
+                            @foreach (var item in customers.OrderBy(x=>new { x.FirstName,x.LastName}))
+                            {
+                                <option value="@item.Id">
+                                    @($"{item.FirstName} {item.LastName} - Mob No : {item.MobileNo}")
+                                </option>
+                            }
+                        </InputSelect>
+                        <label for="SupplierId">Customer Name</label>
+                        <ValidationMessage For="()=>model.SupplierId"></ValidationMessage>
+                    </div>
+                </div>
+            </div>
+            <div class="row table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th colspan="5"></th>
+                            <th class="text-end">
+                                <button type="button" class="btn btn-sm" @onclick="AddNewHandle">+(Add)</button>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Qauntity
+                            </th>
+                            <th>
+                                Rate
+                            </th>
+                            <th>
+                                Discount Amt.
+                            </th>
+                            <th>
+                                Amount
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var i = 0; i < model.PurchaseDetails.Count; i++)
+                        {
+                            <PurchaseDetailRow CalculationChanged="ChangeCalculationHandler" PurchaseDetail="model.PurchaseDetails[i]"></PurchaseDetailRow>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 ">
+                    <div class="form-floating mb-3">
+                        <InputNumber placeholder="Amount" class="form-control" @bind-Value="model.Amount" readonly></InputNumber>
+                        <label for="Amount">Amount</label>
+                        <ValidationMessage For="()=>model.Amount"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 ">
+                    <div class="form-floating mb-3">
+                        <InputNumber placeholder="DiscountAmount" class="form-control" @bind-Value="model.DiscountAmount" @onblur="ChangeCalculationHandler"></InputNumber>
+                        <label for="DiscountAmount">DiscountAmount</label>
+                        <ValidationMessage For="()=>model.DiscountAmount"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 ">
+                    <div class="form-floating mb-3">
+                        <InputNumber placeholder="NetAmount" class="form-control" @bind-Value="model.NetAmount" readonly ></InputNumber>
+                        <label for="NetAmount">NetAmount</label>
+                        <ValidationMessage For="()=>model.NetAmount"></ValidationMessage>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer"></div>
+    </EditForm>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public Guid id { get; set; }
+
+    private Purchase model { get; set; } = new Purchase();
+    private List<Supplier> customers { get; set; } = new List<Supplier>();
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != Guid.Empty)
+        {
+            var purchase = await purchaseDataServices.Get(new DataParams("", id));
+            if (purchase.Result != null)
+            {
+                model = purchase.Result;
+            }
+        }
+        var cust = await supDataServices.GetAll();
+        if (cust.Result != null)
+        {
+            customers = cust.Result.ToList();
+        }
+
+    }
+    protected async Task OnSumbited()
+    {
+        if (id != Guid.Empty)
+        {
+            var res = await purchaseDataServices.Put(model);
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    toaster.ShowToaster("Saved Successfully", ToastLevel.Success);
+                    navigator.NavigateTo("/purchases");
+                }
+            }
+        }
+        else
+        {
+            var res = await purchaseDataServices.Post(model);
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    toaster.ShowToaster("Saved Successfully", ToastLevel.Success);
+                    navigator.NavigateTo("/purchases");
+                }
+            }
+        }
+    }
+    protected Task AddNewHandle()
+    {
+        var detail = new PurchaseDetail()
+            {
+                Discount = 0,
+                Id = Guid.Empty,
+                IsActive = true,
+                NetAmount = 0,
+                Price = 0,
+                ProductId = Guid.Empty,
+                ProductName = "",
+                PurchaseId = model.Id,
+                Quantity = 0,
+                TotalAmount = 0,
+            };
+        model.PurchaseDetails.Add(detail);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task ChangeCalculationHandler()
+    {
+        model.Amount= model.PurchaseDetails.Where(x=>x.IsActive).Sum(x => x.NetAmount);
+        model.NetAmount =model.Amount- model.DiscountAmount;
+        return Task.CompletedTask;
+    }
+}

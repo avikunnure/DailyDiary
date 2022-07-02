@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
+using SavuDiary.UI.Common;
 
 namespace SavuDiary.Client
 {
@@ -13,98 +14,86 @@ namespace SavuDiary.Client
             this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        public async Task<IEnumerable<Customer>?> GetAll(params DataParams[] objects)
+        public async Task<DataResponses<IEnumerable<Customer>>> GetAll(params DataParams[] objects)
         {
-            try
+            var res = await httpClient.GetFromJsonAsync<IEnumerable<Customer>>("/api/Customer");
+           if(res == null)
             {
-                return await httpClient.GetFromJsonAsync<IEnumerable<Customer>>("/api/Customer");
+                return new DataResponses<IEnumerable<Customer>>();
             }
-            catch
+            return new DataResponses<IEnumerable<Customer>>(res, true);
+
+        }
+
+        public async Task<DataResponses<Customer>> Get(params DataParams[] obj)
+        {
+            if (obj == null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(obj));
+            }
+            if (obj.Length == 0)
+            {
+                throw new ArgumentOutOfRangeException("id");
+            }
+            var cust = await httpClient.GetFromJsonAsync<Customer>($"/api/Customer/{obj[0].Value}");
+            if (cust == null)
+            {
+                return new DataResponses<Customer>();
+            }
+            return new DataResponses<Customer>(cust, true);
+        }
+
+        public async Task<DataResponses<Customer>> Post(Customer t)
+        {
+            var result = await httpClient.PostAsJsonAsync<Customer>("/api/Customer", t);
+            if (result.IsSuccessStatusCode)
+            {
+                var res = await result.Content.ReadFromJsonAsync<Customer>();
+                if(res == null)
+                {
+                    return new DataResponses<Customer>();
+                }
+                return new DataResponses<Customer>(res, true);
+            }
+            else
+            {
+                return new DataResponses<Customer>(t, false);
             }
         }
 
-        public async Task<Customer?> Get(params DataParams[] obj)
+        public async Task<DataResponses<Customer>> Put(Customer t, params DataParams[] dataParams)
         {
-            try
+            var result = await httpClient.PutAsJsonAsync<Customer>($"/api/Customer/{t.Id}", t);
+            if (result.IsSuccessStatusCode)
             {
-                if (obj == null)
+                var res = await result.Content.ReadFromJsonAsync<Customer>();
+                if (res == null)
                 {
-                    throw new ArgumentNullException(nameof(obj));
+                    return new DataResponses<Customer>();
                 }
-                if (obj.Length == 0)
-                {
-                    throw new ArgumentOutOfRangeException("id");
-                }
-                return await httpClient.GetFromJsonAsync<Customer>($"/api/Customer/{obj[0].Value}");
+                return new DataResponses<Customer>(res, true);
             }
-            catch
+            else
             {
-                return null;
+                return new DataResponses<Customer>(t, false);
             }
         }
 
-        public async Task<DataResponses> Post(Customer t)
+        public async Task<DataResponses<Customer>> Delete(Customer t)
         {
-            try
+            var result = await httpClient.DeleteAsync($"/api/Customer/{t.Id}");
+            if (result.IsSuccessStatusCode)
             {
-                var result = await httpClient.PostAsJsonAsync<Customer>("/api/Customer", t);
-                if (result.IsSuccessStatusCode)
+                var res = await result.Content.ReadFromJsonAsync<Customer>();
+                if( res == null)
                 {
-                    var res = result.Content.ReadFromJsonAsync<Customer>();
-                    return new DataResponses(res, true);
+                    return new DataResponses<Customer>();
                 }
-                else
-                {
-                    return new DataResponses(t, false);
-                }
+                return new DataResponses<Customer>(res, true);
             }
-            catch
+            else
             {
-                return new DataResponses(t, false);
-            }
-        }
-
-        public async Task<DataResponses> Put(Customer t, params DataParams[] dataParams)
-        {
-            try
-            {
-                var result = await httpClient.PutAsJsonAsync<Customer>($"/api/Customer/{t.Id}", t);
-                if (result.IsSuccessStatusCode)
-                {
-                    var res = result.Content.ReadFromJsonAsync<Customer>();
-                    return new DataResponses(res, true);
-                }
-                else
-                {
-                    return new DataResponses(t, false);
-                }
-            }
-            catch
-            {
-                return new DataResponses(t, false);
-            }
-        }
-
-        public async Task<DataResponses> Delete(Customer t)
-        {
-            try
-            {
-                var result = await httpClient.DeleteAsync($"/api/Customer/{t.Id}");
-                if (result.IsSuccessStatusCode)
-                {
-                    var res = result.Content.ReadFromJsonAsync<Customer>();
-                    return new DataResponses(res, true);
-                }
-                else
-                {
-                    return new DataResponses(t, false);
-                }
-            }
-            catch
-            {
-                return new DataResponses(t, false);
+                return new DataResponses<Customer>(t, false);
             }
         }
     }

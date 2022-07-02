@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.ResponseCompression;
+using SavuDairy.Server.Application.DependencyInjections;
+using SavuDiary.Server.DataLayers;
 using SavuDiary.Server.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddStartupServices(builder.Configuration);
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbReporitory();
+builder.Services.AddApplicationServices();
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

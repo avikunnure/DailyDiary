@@ -1,0 +1,88 @@
+﻿@inject IDataServices<Product> productServices
+<tr style='@DisplayRow'>
+    <td>
+
+        <input type="hidden" name='@($"PurchaseDetails[{Indexer}].Id")' value="@PurchaseDetail.Id" />
+        <input type="hidden" name='@($"PurchaseDetails[{Indexer}].PurchaseId")' value="@PurchaseDetail.PurchaseId" />
+        <input type="hidden" name='@($"PurchaseDetails[{Indexer}].IsActive")' value="@PurchaseDetail.IsActive" />
+        <input type="hidden" name='@($"PurchaseDetails[{Indexer}].TotalAmount")' value="@PurchaseDetail.TotalAmount" />
+        <InputSelect placeholder="ProductId" name="@($"PurchaseDetails[{Indexer}].ProductId")" class="form-control" @bind-Value="PurchaseDetail.ProductId" >
+            <option value="@Guid.Empty">
+                -- None Select --
+            </option>
+            @foreach (var item in products)
+            {
+                if (PurchaseDetail.ProductId == item.Id)
+                {
+                    <option selected value="@item.Id">
+                        @item.Name
+                    </option>
+                }
+                else
+                {
+                    <option value="@item.Id">
+                        @item.Name
+                    </option>
+                }
+            }
+        </InputSelect>
+    </td>
+    <td>
+        <InputNumber name='@($"PurchaseDetails[{Indexer}].Quantity")' @bind-Value="PurchaseDetail.Quantity" @onblur="CalculatesRowDetails" class="form-control" />
+    </td>
+    <td>
+        <InputNumber name='@($"PurchaseDetails[{Indexer}].Price")' @bind-Value="PurchaseDetail.Price" @onblur="CalculatesRowDetails" class="form-control" />
+    </td>
+    <td>
+        <InputNumber name='@($"PurchaseDetails[{Indexer}].Discount")' @bind-Value="PurchaseDetail.Discount" @onblur="CalculatesRowDetails" class="form-control" />
+    </td>
+    <td>
+        <InputNumber name='@($"PurchaseDetails[{Indexer}].NetAmount")' @bind-Value="PurchaseDetail.NetAmount" @onblur="CalculatesRowDetails" class="form-control" readonly />
+
+    </td>
+    <td>
+        <button @onclick='HandleDelete' class="btn btn-sm">
+            delete
+        </button>
+    </td>
+</tr>
+@code {
+    [Parameter]
+    public PurchaseDetail PurchaseDetail { get; set; } = new PurchaseDetail();
+
+    [Parameter]
+    public Int32 Indexer { get; set; }
+
+    [Parameter]
+    public EventCallback CalculationChanged { get; set; }
+
+    protected IList<Product> products { get; set; } = new List<Product>();
+    private string DisplayRow = "";
+    protected override  async Task OnInitializedAsync()
+    {
+        var prods =await productServices.GetAll();
+        if (prods.Result != null)
+        {
+            products = prods.Result.ToList();
+        }
+    }
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+    protected void HandleDelete()
+    {
+        PurchaseDetail.IsActive = false;
+        DisplayRow = "display:none;";
+        StateHasChanged();
+    }
+    protected async Task CalculatesRowDetails()
+    {
+        PurchaseDetail.TotalAmount = PurchaseDetail.Quantity * PurchaseDetail.Price;
+        PurchaseDetail.NetAmount = PurchaseDetail.TotalAmount - PurchaseDetail.Discount;
+        if (CalculationChanged.HasDelegate)
+        {
+            await CalculationChanged.InvokeAsync();
+        }
+    }
+}

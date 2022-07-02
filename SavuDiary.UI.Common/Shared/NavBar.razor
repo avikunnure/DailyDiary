@@ -1,0 +1,41 @@
+﻿<nav class="navbar navbar-expand-lg navbar-dark" style="background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%)">
+    <div class="container-fluid">
+        <NavLink class="navbar-brand" href="" Match="NavLinkMatch.All">
+            SavuDiary
+        </NavLink>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+
+            <ul class="navbar-nav nav-for-mobile" >
+                @foreach (var item in NavItemsMenusList)
+                {
+                    <NavLink class="nav-link" href="@(item.Link)">
+                        <span class="@(item.CssIconclassName)" aria-hidden="true"></span> @(item.Title)
+                    </NavLink>
+                }
+            </ul>
+            <url class="navbar-nav pull-right">
+                <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            </url>
+        </div>
+    </div>
+</nav>
+<style>
+    .nav-for-mobile {
+        display: block !important;
+    }
+
+    @@media (min-width: 641px) {
+        .nav-for-mobile {
+            display: none !important;
+        }
+    }
+</style>
+@code {
+    [Parameter]
+    public List<NavItemsMenus> NavItemsMenusList { get; set; } = new List<NavItemsMenus>();
+
+}

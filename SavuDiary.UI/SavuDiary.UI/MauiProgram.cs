@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.WebView.Maui;
+using SavuDairy.Server.Application.DependencyInjections;
+using SavuDiary.Server.DataLayers;
 using SavuDiary.UI;
 
 namespace SavuDiary.UI
@@ -21,9 +23,10 @@ namespace SavuDiary.UI
 #endif
 
             builder.Services.AddSingleton(typeof(SavuDiary.Client.Components.ToasterServices), typeof(SavuDiary.Client.Components.ToasterServices));
+         
             builder.Services.AddDataServices();
-
-           
+            builder.Services.AddDbReporitory();
+            builder.Services.AddApplicationServices();
             return builder.Build();
         }
     }

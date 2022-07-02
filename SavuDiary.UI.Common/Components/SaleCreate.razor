@@ -1,7 +1,8 @@
-﻿@page "/sale"
-@page "/sale/{id:guid?}/{customerno:long?}"
+﻿@page "/sales/Create"
+@page "/sales/Edit/{id:guid?}/{customerno:long?}"
 @inject IDataServices<Customer> custDataServices
 @inject IDataServices<Sale> saleDataServices
+@inject IDataServices<Product> productServices
 @inject NavigationManager navigator
 <div class="row">
     <div class="col-6">
@@ -49,6 +50,29 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Qauntity
+                            </th>
+                            <th>
+                                Rate
+                            </th>
+                            <th>
+                                Discount Amt.
+                            </th>
+                            <th>
+                                Amount
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
         <div class="card-footer"></div>
     </EditForm>
@@ -71,9 +95,9 @@
         if (id != Guid.Empty)
         {
             var sale = await saleDataServices.Get(new DataParams("",id));
-            if (sale != null)
+            if (sale.Result != null)
             {
-                model = sale;
+                model = sale.Result;
             }
         }
         else if (customerno > 0)
@@ -81,10 +105,11 @@
 
         }
         var cust = await custDataServices.GetAll();
-        if (cust != null)
+        if (cust.Result != null)
         {
-            customers = cust.ToList();
+            customers = cust.Result.ToList();
         }
+        
     }
 
     protected async Task OnSumbited()

@@ -1,24 +1,25 @@
 ﻿using SavuDiary.Shared;
 using System.Net.Http.Json;
 using SavuDiary.Server.DataLayers;
+using SavuDairy.Server.Application.Interfaces;
+using SavuDiary.UI.Common;
 
 namespace SavuDiary.UI
 {
     public class CustomerServices : IDataServices<Customer>
     {
-        private readonly IRepository<CustomerEntity> _Repository;
-
-        public CustomerServices(IRepository<CustomerEntity> customerRepository)
+        private readonly ICustomerServices _services;
+        public CustomerServices(ICustomerServices services)
         {
-            _Repository = customerRepository;
+            _services = services;
         }
 
-        public async Task<IEnumerable<Customer>?> GetAll(params DataParams[] objects)
+        public async Task< DataResponses< IEnumerable<Customer>>> GetAll(params DataParams[] objects)
         {
             try
             {
-                var res= await _Repository.GetAll();
-                return res.Select(x => (Customer)x);
+                var result = await _services.GetAll();
+                return result;
             }
             catch
             {
@@ -26,7 +27,9 @@ namespace SavuDiary.UI
             }
         }
 
-        public async Task<Customer?> Get(params DataParams[] obj)
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+        public async Task<DataResponses<Customer>> Get(params DataParams[] obj)
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         {
             try
             {
@@ -42,8 +45,8 @@ namespace SavuDiary.UI
                 {
                     throw new ArgumentOutOfRangeException("id");
                 }
-                var res =await _Repository.GetById(Guid.Parse(obj[0].Value?.ToString()));
-                return (Customer)res;
+                var res = await _services.Get(Guid.Parse(obj[0].Value?.ToString()));
+                return res;
             }
             catch
             {
@@ -51,46 +54,46 @@ namespace SavuDiary.UI
             }
         }
 
-        public async Task<DataResponses> Post(Customer t)
+        public async Task<DataResponses<Customer>> Post(Customer t)
         {
             try
             {
-                var result = await _Repository.Insert(t);
-                
-                    return new DataResponses((Customer)result, true);
-                
+                var result = await _services.Post(t);
+
+                return result;
+
             }
             catch
             {
-                return new DataResponses(t, false);
+                return new DataResponses<Customer>(t, false);
             }
         }
 
-        public async Task<DataResponses> Put(Customer t, params DataParams[] dataParams)
+        public async Task<DataResponses<Customer>> Put(Customer t, params DataParams[] dataParams)
         {
             try
             {
-                var result = await _Repository.Update(t);
+                var result = await _services.Put(t);
 
-                return new DataResponses((Customer)result, true);
+                return result;
             }
             catch
             {
-                return new DataResponses(t, false);
+                return new DataResponses<Customer>(t, false);
             }
         }
 
-        public async Task<DataResponses> Delete(Customer t)
+        public async Task<DataResponses<Customer>> Delete(Customer t)
         {
             try
             {
-                var result = await _Repository.Delete(t);
+                var result = await _services.Delete(t);
 
-                return new DataResponses((Customer)result, true);
+                return result;
             }
             catch
             {
-                return new DataResponses(t, false);
+                return new DataResponses<Customer>(t, false);
             }
         }
     }

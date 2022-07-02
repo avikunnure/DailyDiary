@@ -1,5 +1,5 @@
-﻿@page "/product"
-@page "/product/{id:guid}"
+﻿@page "/products/Create"
+@page "/products/edit/{id:guid}"
 @inject IDataServices<Product> dataServices
 @inject NavigationManager navigator
 <div class="card">
@@ -60,9 +60,9 @@
         if (id != Guid.Empty)
         {
             var prod = await dataServices.Get(new DataParams("", id ));
-            if (prod != null)
+            if (prod.Result != null)
             {
-                product = prod;
+                product = prod.Result;
             }
         }
     }

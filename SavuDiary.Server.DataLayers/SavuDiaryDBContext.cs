@@ -5,6 +5,7 @@ namespace SavuDiary.Server.DataLayers
     {
         public DbSet<ProductEntity> Products { get; set; }
         public DbSet<CustomerEntity> Customers { get; set; }
+        public DbSet<SupplierEntity> Suppliers { get; set; }
         public DbSet<PurchaseDetailEntity> PurchaseDetails { get; set; }
         public DbSet<PurchaseEntity> Purchase { get; set; }
         public DbSet<SaleDetailEntity> SaleDetails { get; set; }

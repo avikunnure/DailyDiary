@@ -9,60 +9,69 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace SavuDiary.Server.DataLayers
 {
-    public class Repository<T> : IRepository<T>, IDisposable where T : BaseEntity, new()
+    public class SaleDetailRepository : IRepository<SaleDetailEntity>, IDisposable 
     {
         private bool disposedValue;
 
         private SavuDiaryDBContext Context { get; }
-        public Repository(SavuDiaryDBContext context)
+        public SaleDetailRepository(SavuDiaryDBContext context )
         {
             Context = context;
         }
 
-        public async Task<T> Insert(T entity)
+        public async Task<SaleDetailEntity> Insert(SaleDetailEntity entity)
         {
             Context.Add(entity);
             await Context.SaveChangesAsync();
             return entity;
         }
 
-        public async Task<T> Update(T entity)
+        public async Task<SaleDetailEntity> Update(SaleDetailEntity entity)
         {
             if (entity.Id != Guid.Empty)
             {
-                Context.Entry(entity).State = EntityState.Detached;
-                Context.Entry(entity).State= EntityState.Modified;
+                var myentity = Context.SaleDetails.FirstOrDefault(x => x.Id == entity.Id);
+                if (myentity != null)
+                {
+                    Context.Entry(myentity).State = EntityState.Detached;
 
+                }
+                Context.Entry(entity).State = EntityState.Modified;
                 await Context.SaveChangesAsync();
             }
             return entity;
         }
-        public async Task<T> Delete(T entity)
+        public async Task<SaleDetailEntity> Delete(SaleDetailEntity entity)
         {
             if (entity.Id != Guid.Empty)
             {
                 entity.IsActive = false;
-                Context.Entry(entity).State = EntityState.Detached;
+                var myentity = Context.SaleDetails.FirstOrDefault(x => x.Id == entity.Id);
+                if (myentity != null)
+                {
+                    Context.Entry(myentity).State = EntityState.Detached;
+
+                }
                 Context.Entry(entity).State = EntityState.Modified;
                 await Context.SaveChangesAsync();
             }
             return entity;
         }
 
-        public Task<IEnumerable<T>> GetAll()
+        public IQueryable<SaleDetailEntity> GetAll()
         {
-            return Task.FromResult(Context.Set<T>().AsNoTracking().AsEnumerable());
+            return Context.Set<SaleDetailEntity>().AsNoTracking().AsQueryable();
         }
 
-        public Task<T> GetById(Guid id)
+        public Task<SaleDetailEntity> GetById(Guid id)
         {
-            var res = Context.Set<T>().Where(x => x.Id == id).AsNoTracking().FirstOrDefault();
+            var res = Context.Set<SaleDetailEntity>().Where(x => x.Id == id).AsNoTracking().FirstOrDefault();
             if (res != null)
             {
                 return Task.FromResult(res);
 
             }
-            return Task.FromResult(new T());
+            return Task.FromResult(new SaleDetailEntity());
         }
 
         protected virtual void Dispose(bool disposing)
@@ -78,7 +87,7 @@ namespace SavuDiary.Server.DataLayers
         }
 
         // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        ~Repository()
+        ~SaleDetailRepository()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: false);

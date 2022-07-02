@@ -129,11 +129,8 @@ namespace SavuDiary.Server.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("DateTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<decimal>("DiscountAmount")
                         .HasColumnType("numeric");
@@ -147,6 +144,15 @@ namespace SavuDiary.Server.Migrations
                     b.Property<string>("Notes")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<long>("PurchaseNo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("PurchaseNo"));
+
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -220,7 +226,13 @@ namespace SavuDiary.Server.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("SaleDateTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long>("SaleNo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("SaleNo"));
 
                     b.HasKey("Id");
 
@@ -242,7 +254,7 @@ namespace SavuDiary.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -260,6 +272,36 @@ namespace SavuDiary.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("StockMangement");
+                });
+
+            modelBuilder.Entity("SavuDiary.Server.DataLayers.SupplierEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("EmailId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("MobileNo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Suppliers");
                 });
 #pragma warning restore 612, 618
         }

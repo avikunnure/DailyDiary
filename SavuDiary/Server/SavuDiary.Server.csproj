@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\SavuDairy.Server.Application\SavuDairy.Server.Application.csproj" />
     <ProjectReference Include="..\..\SavuDiary.Server.DataLayers\SavuDiary.Server.DataLayers.csproj" />
     <ProjectReference Include="..\..\SavuDiary.UI.Common\SavuDiary.UI.Common.csproj" />
     <ProjectReference Include="..\Client\SavuDiary.Client.csproj" />

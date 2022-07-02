@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SavuDairy.Server.Application.Interfaces;
 using SavuDiary.Server.DataLayers;
 
 namespace SavuDiary.Server.Controllers
@@ -7,22 +8,27 @@ namespace SavuDiary.Server.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private IRepository<CustomerEntity> _customerRepository;
+        private ICustomerServices _customerRepository;
 
-        public CustomerController(IRepository<CustomerEntity> customerRepository)
+        public CustomerController(ICustomerServices customerRepository)
         {
             _customerRepository = customerRepository;
         }
 
         // GET: api/<CustomerController>
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
             try
             {
-               var result= await _customerRepository.GetAll();
-                return Ok(result.Select(x=>(Shared.Customer)x));
-            }catch (Exception)
+               var result=  _customerRepository.GetAll().Result;
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result.Result);
+            }
+            catch (Exception)
             {
                 throw;
             }
@@ -34,8 +40,12 @@ namespace SavuDiary.Server.Controllers
         {
             try
             {
-                var result =(Shared.Customer) await _customerRepository.GetById(id);
-                return Ok(result);
+                var result =await _customerRepository.Get(id);
+                if(result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result.Result);
             }
             catch (Exception)
             {
@@ -49,8 +59,12 @@ namespace SavuDiary.Server.Controllers
         {
             try
             {
-                var result = await _customerRepository.Insert((CustomerEntity) customer);
-                return Ok(result);
+                var result = await _customerRepository.Post(customer);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result.Result);
             }
             catch (Exception)
             {
@@ -64,8 +78,12 @@ namespace SavuDiary.Server.Controllers
         {
             try
             {
-                var result = await _customerRepository.Update((CustomerEntity) customer);
-                return Ok(result);
+                var result = await _customerRepository.Put(customer);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result.Result);
             }
             catch (Exception)
             {
@@ -79,9 +97,17 @@ namespace SavuDiary.Server.Controllers
         {
             try
             {
-                var customer = await _customerRepository.GetById(id);
-                var result = await _customerRepository.Delete(customer);
-                return Ok(result);
+                var customer = await _customerRepository.Get(id);
+                if (customer.Result == null)
+                {
+                    return NotFound();
+                }
+                var result = await _customerRepository.Delete(customer.Result);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result.Result);
             }
             catch (Exception)
             {

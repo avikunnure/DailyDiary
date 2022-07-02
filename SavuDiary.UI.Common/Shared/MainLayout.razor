@@ -1,17 +1,38 @@
 ﻿@inherits LayoutComponentBase
 @using SavuDiary.UI.Common.Components
+<NavBar NavItemsMenusList="navItemsMenusList" />
 <div class="page">
     
-    <div class="sidebar">
-        <NavMenu />
+    <div class="sidebar hide-for-mobile">
+        <NavMenu NavItemsMenusList="navItemsMenusList" />
     </div>
     <main>
         <Toaster></Toaster>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
         <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
+<style>
+    .hide-for-mobile {
+        display: none !important;
+    }
+
+    @@media (min-width: 641px) {
+        .hide-for-mobile {
+            display: block !important;
+        }
+    }
+
+</style>
+@code {
+    List<NavItemsMenus> navItemsMenusList = new List<NavItemsMenus>()
+    {
+        new NavItemsMenus(){ CssIconclassName="oi oi-list-rich",Link="products",Title="Products" },
+        new NavItemsMenus(){ CssIconclassName="oi oi-list-rich",Link="customers",Title="Customers" },
+        new NavItemsMenus(){ CssIconclassName="oi oi-list-rich",Link="sales",Title="Sales" },
+        new NavItemsMenus(){ CssIconclassName="oi oi-list-rich",Link="purchases",Title="Purchases" },
+         new NavItemsMenus(){ CssIconclassName="oi oi-list-rich",Link="Suppliers",Title="Suppliers" },
+    };
+
+}

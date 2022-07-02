@@ -6,29 +6,30 @@ using System.Threading.Tasks;
 
 namespace SavuDiary.Shared
 {
-    public interface IDataServices<T> where T : class
+    public class DataResponses<T> where T : class
     {
-        public Task<IEnumerable<T>?> GetAll(params DataParams[] objects);
-        public Task<T?> Get(params DataParams[] obj); 
-        public Task<DataResponses> Post(T t);
-        public Task<DataResponses> Put(T t,params DataParams[] dataParams);
-        public Task<DataResponses> Delete(T t);
-    }
-    public class DataResponses
-    {
-        public object? Result { get; set; }
+        public T? Result { get; set; }
         public bool IsSuccessStatusCode { get; set; }
-        public DataResponses(object result, bool isSuccessStatusCode)
+        public string Message { get; set; } = "";
+
+        public DataResponses(bool isSuccessStatusCode=false) : this("", isSuccessStatusCode) { }
+
+        public DataResponses(T result, bool isSuccessStatusCode = true)
         {
             Result = result;
+            IsSuccessStatusCode=isSuccessStatusCode;
+        }
+        public DataResponses(string message, bool isSuccessStatusCode = false)
+        {
             IsSuccessStatusCode = isSuccessStatusCode;
+            Message = message;
         }
     }
-    public class DataParams 
-    { 
+    public class DataParams
+    {
         public string Name { get; set; }
         public object Value { get; set; }
-        public bool IsQueryString { get; set; }=false;
+        public bool IsQueryString { get; set; } = false;
         public DataParams(string name, object value)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));

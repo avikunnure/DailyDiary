@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SavuDairy.Server.Application.Interfaces;
 using SavuDiary.Server.DataLayers;
 
 namespace SavuDiary.Server.Controllers
@@ -7,22 +8,27 @@ namespace SavuDiary.Server.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private IRepository<ProductEntity> _productRepository;
+        private IProductServices _productRepository;
 
-        public ProductController(IRepository<ProductEntity> productRepository)
+        public ProductController(IProductServices productRepository)
         {
             _productRepository = productRepository;
         }
 
         // GET: api/<ProductController>
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
             try
             {
-               var result= await _productRepository.GetAll();
-                return Ok(result.Select(x=>(Shared.Product)x));
-            }catch (Exception)
+                var result = _productRepository.GetAll().Result;
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result.Result);
+            }
+            catch (Exception)
             {
                 throw;
             }
@@ -30,12 +36,16 @@ namespace SavuDiary.Server.Controllers
 
         // GET api/<ProductController>/5
         [HttpGet("{id}")]
-        public  async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
             try
             {
-                var result =await _productRepository.GetById(id);
-                return Ok(result);
+                var result = await _productRepository.Get(id);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result.Result);
             }
             catch (Exception)
             {
@@ -49,8 +59,12 @@ namespace SavuDiary.Server.Controllers
         {
             try
             {
-                var result = await _productRepository.Insert((ProductEntity) product);
-                return Ok(result);
+                var result = await _productRepository.Post(product);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result.Result);
             }
             catch (Exception)
             {
@@ -64,8 +78,12 @@ namespace SavuDiary.Server.Controllers
         {
             try
             {
-                var result = await _productRepository.Update((ProductEntity) product);
-                return Ok(result);
+                var result = await _productRepository.Put(product);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result.Result);
             }
             catch (Exception)
             {
@@ -79,9 +97,17 @@ namespace SavuDiary.Server.Controllers
         {
             try
             {
-                var product = await _productRepository.GetById(id);
-                var result = await _productRepository.Delete(product);
-                return Ok(result);
+                var product = await _productRepository.Get(id);
+                if (product.Result == null)
+                {
+                    return NotFound();
+                }
+                var result = await _productRepository.Delete(product.Result);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result.Result);
             }
             catch (Exception)
             {

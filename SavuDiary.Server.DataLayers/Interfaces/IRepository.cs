@@ -8,7 +8,7 @@ namespace SavuDiary.Server.DataLayers
 {
     public interface IRepository<T> where T : BaseEntity
     {   
-        Task<IEnumerable<T>> GetAll();
+        IQueryable<T> GetAll();
         Task<T> Insert(T entity);
         Task<T> Delete(T entity);
         Task<T> Update(T entity);

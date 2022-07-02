@@ -3,9 +3,9 @@
 @inject NavigationManager navigator
 <div class="card">
     <div class="card-header">
-        <div class="col-2">
+        <div class="col-12">
             Products >>
-            <a href="product" type="button" class="btn btn-primary">
+            <a href="products/create" type="button" class="btn btn-primary">
                 Create
             </a>
         </div>
@@ -22,7 +22,7 @@
             <tbody>
                 @foreach (var item in ListOfProducts)
                 {
-                    <tr @onclick='()=> navigator.NavigateTo($"/product/{item.Id}")'>
+                    <tr @onclick='()=> navigator.NavigateTo($"/products/edit/{item.Id}")'>
                         <td>@item.Name</td>
                         <td>@item.Code</td>
                     </tr>
@@ -33,13 +33,12 @@
 </div>
 @code {
     protected List<Product> ListOfProducts = new List<Product>();
-    protected bool ShowModal = false;
     protected override async Task OnInitializedAsync()
     {
-        var list = await dataServices.GetAll();
-        if (list != null)
+        var list =await dataServices.GetAll();
+        if (list .Result!= null)
         {
-            ListOfProducts = list.ToList();
+            ListOfProducts = list.Result.ToList();
         }
     }
 

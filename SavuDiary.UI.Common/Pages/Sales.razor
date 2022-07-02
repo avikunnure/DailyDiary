@@ -4,9 +4,9 @@
 <h3>Sales</h3>
 <div class="card">
     <div class="card-header">
-        <div class="col-2">
+        <div class="col-12">
             Sales >>
-            <a href="sale" type="button" class="btn btn-primary">
+            <a href="sales/create" type="button" class="btn btn-primary">
                 Create
             </a>
         </div>
@@ -24,7 +24,7 @@
             <tbody>
                 @foreach (var item in ListOfSales)
                 {
-                    <tr @onclick='()=>nagivator.NavigateTo($"/sale/{item.Id}")'>
+                    <tr @onclick='()=>nagivator.NavigateTo($"/sales/edit/{item.Id}")'>
                         <td>
                             @($"{item.CustomerName}")
                         </td>
@@ -39,12 +39,12 @@
 @code {
     protected List<Sale> ListOfSales { get; set; } = new List<Sale>();
 
-    protected override async Task OnInitializedAsync()
+    protected override  async Task OnInitializedAsync()
     {
-        var cust = await dataServices.GetAll();
-        if (cust != null)
+        var cust =await dataServices.GetAll();
+        if (cust .Result!= null)
         {
-            ListOfSales = cust.ToList();
+            ListOfSales = cust.Result.ToList();
         }
 
     }

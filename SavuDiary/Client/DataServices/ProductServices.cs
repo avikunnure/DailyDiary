@@ -2,6 +2,8 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
+using System.Collections.Generic;
+using SavuDiary.UI.Common;
 
 namespace SavuDiary.Client
 {
@@ -13,19 +15,24 @@ namespace SavuDiary.Client
             this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        public async Task<IEnumerable<Product>?> GetAll(params DataParams[] objects)
+        public async Task<DataResponses<IEnumerable<Product>>> GetAll(params DataParams[] objects)
         {
             try
             {
-                return await httpClient.GetFromJsonAsync<IEnumerable<Product>>("/api/Product");
+                var list = await httpClient.GetFromJsonAsync<IEnumerable<Product>>("/api/Product");
+                if(list == null)
+                {
+                    return new DataResponses<IEnumerable<Product>>();
+                }
+                return new DataResponses < IEnumerable < Product >> (list,true);
             }
             catch
             {
-                return null;
+                return new DataResponses<IEnumerable<Product>>(false);
             }
         }
 
-        public async Task<Product?> Get(params DataParams[] obj)
+        public async Task<DataResponses<Product>> Get(params DataParams[] obj)
         {
             try
             {
@@ -37,74 +44,91 @@ namespace SavuDiary.Client
                 {
                     throw new ArgumentOutOfRangeException("id");
                 }
-                return await httpClient.GetFromJsonAsync<Product>($"/api/Product/{obj[0].Value}");
+                var prod= await httpClient.GetFromJsonAsync<Product>($"/api/Product/{obj[0].Value}");
+                if(prod == null)
+                {
+                    return new DataResponses<Product>();
+                }
+                return new DataResponses<Product>(prod, true);
             }
             catch
             {
-                return null;
+                return new DataResponses<Product>();
             }
         }
 
-        public async Task<DataResponses> Post(Product t)
+        public async Task<DataResponses<Product>> Post(Product t)
         {
             try
             {
                 var result = await httpClient.PostAsJsonAsync<Product>("/api/Product", t);
                 if (result.IsSuccessStatusCode)
                 {
-                    var res = result.Content.ReadFromJsonAsync<Product>();
-                    return new DataResponses(res, true);
+                    var res =await result.Content.ReadFromJsonAsync<Product>();
+                    if (null == res)
+                    {
+                        return new DataResponses<Product>();
+                    }
+                    return new DataResponses<Product>(res, true);
                 }
                 else
                 {
-                    return new DataResponses(t, false);
+                    return new DataResponses<Product>(t, false);
                 }
             }
             catch
             {
-                return new DataResponses(t, false);
+                return new DataResponses<Product>(t, false);
             }
         }
 
-        public async Task<DataResponses> Put(Product t, params DataParams[] dataParams)
+        public async Task<DataResponses<Product>> Put(Product t, params DataParams[] dataParams)
         {
             try
             {
                 var result = await httpClient.PutAsJsonAsync<Product>($"/api/Product/{t.Id}", t);
                 if (result.IsSuccessStatusCode)
                 {
-                    var res = result.Content.ReadFromJsonAsync<Product>();
-                    return new DataResponses(res, true);
+                    var res =await result.Content.ReadFromJsonAsync<Product>();
+                    if (res == null)
+                    {
+                        return new DataResponses<Product>();
+                    }
+                    return new DataResponses<Product>(res, true);
                 }
                 else
                 {
-                    return new DataResponses(t, false);
+                    return new DataResponses<Product>(t, false);
                 }
             }
             catch
             {
-                return new DataResponses(t, false);
+                return new DataResponses<Product>(t, false);
             }
         }
 
-        public async Task<DataResponses> Delete(Product t)
+        public async Task<DataResponses<Product>> Delete(Product t)
         {
             try
             {
                 var result = await httpClient.DeleteAsync($"/api/Product/{t.Id}");
                 if (result.IsSuccessStatusCode)
                 {
-                    var res = result.Content.ReadFromJsonAsync<Product>();
-                    return new DataResponses(res, true);
+                    var res =await result.Content.ReadFromJsonAsync<Product>();
+                    if(res == null)
+                    {
+                        return new DataResponses<Product>();
+                    }
+                    return new DataResponses<Product>(res, true);
                 }
                 else
                 {
-                    return new DataResponses(t, false);
+                    return new DataResponses<Product>(t, false);
                 }
             }
             catch
             {
-                return new DataResponses(t, false);
+                return new DataResponses<Product>(t, false);
             }
         }
     }

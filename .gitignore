@@ -16,3 +16,5 @@
 /SavuDiary.UI/SavuDiary.UI/bin/Debug
 /SavuDiary.UI.Common/bin/Debug/net6.0
 /SavuDiary.UI.Common/obj
+/SavuDairy.Server.Application/bin/Debug/net6.0
+/SavuDairy.Server.Application/obj

@@ -60,10 +60,10 @@ namespace SavuDiary.Server.DataLayers
             return entity;
         }
 
-        public async Task<IEnumerable<SaleEntry>> GetAll()
+        public IQueryable<SaleEntry> GetAll()
         {
-            var list = await _saleRepository.GetAll();
-            return list.ToList().Select(x => new SaleEntry() { SaleEntity = x, Id = x.Id });
+            var list = _saleRepository.GetAll();
+            return list.ToList().Select(x => new SaleEntry() { SaleEntity = x, Id = x.Id }).AsQueryable();
         }
 
         public async Task<SaleEntry> GetById(Guid id)

@@ -1,5 +1,5 @@
-﻿@page "/customer"
-@page "/customer/{id:guid}"
+﻿@page "/customers/Create"
+@page "/customers/edit/{id:guid}"
 @inject IDataServices<Customer> dataServices
 @inject NavigationManager navigator
 
@@ -71,9 +71,9 @@
         if (id != Guid.Empty)
         {
             var cust = await dataServices.Get(new DataParams( "",id));
-            if (cust != null)
+            if (cust.Result != null)
             {
-                model = cust;
+                model = cust.Result;
             }
         }
     }

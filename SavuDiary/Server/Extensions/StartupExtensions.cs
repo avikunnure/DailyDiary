@@ -14,8 +14,7 @@ namespace SavuDiary.Server.Extensions
                     , x => x.MigrationsAssembly(typeof(StartupExtensions).Assembly.FullName)
                     );
             });
-            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
-            services.AddTransient(typeof(IRepository<SaleEntry>), typeof(SaleEntryRepository));
+           
             return services;
         }
     }

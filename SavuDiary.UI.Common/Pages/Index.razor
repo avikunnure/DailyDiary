@@ -41,7 +41,12 @@
             <span>Sale By Sequences</span>
         </button>
     </div>
-    
+    <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+        <button @onclick='()=>navigator.NavigateTo("/purchases")' class="btn btn-info disp-legends">
+            <img src="_content/SavuDiary.UI.Common/imgs/money.png" />
+            <span>Purchases</span>
+        </button>
+    </div>
 </div>
 @code{
     protected override Task OnInitializedAsync()

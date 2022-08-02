@@ -1,0 +1,56 @@
+﻿<div class="list-group-item" style="@DisplayRow">
+    <div class="row">
+
+        <div class="col-lg-4 col-4">
+            <div class="form-floating mb-1">
+                <InputText @bind-Value="taxRuleDetail.PerticularNames"
+                           placeholder="PerticularNames"
+                           class="form-control" />
+                <label for="PerticularNames">PerticularNames</label>
+                <ValidationMessage For="()=>taxRuleDetail.PerticularNames" />
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-3">
+            <div class="form-floating mb-1">
+                <InputNumber @bind-Value="taxRuleDetail.TaxPercentage"
+                             placeholder="TaxPercentage"
+                             class="form-control" />
+                <label for="TaxPercentage">TaxPercentage</label>
+                <ValidationMessage For="()=>taxRuleDetail.TaxPercentage" />
+            </div>
+        </div>
+        <div class="col-lg-4 col-4">
+            <div class="form-floating mb-1">
+                <InputTextArea @bind-Value="taxRuleDetail.Descriptions"
+                               placeholder="Descriptions"
+                               class="form-control" />
+                <label for="Descriptions">Descriptions</label>
+                <ValidationMessage For="()=>taxRuleDetail.Descriptions" />
+            </div>
+        </div>
+
+        <div class="col-lg-1 col-1" style="padding-top: 10px;padding-left: 0px;">
+            <span @onclick="HandleDelete" class="oi oi-trash" style="fill:red;stroke: red;"></span>
+        </div>
+    </div>
+    <hr />
+</div>
+@code {
+    [Parameter]
+    public TaxRuleDetail taxRuleDetail { get; set; } = new TaxRuleDetail();
+
+  
+    private string DisplayRow = "";
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+    protected void HandleDelete()
+    {
+        taxRuleDetail.IsActive = false;
+        DisplayRow = "display:none;";
+        StateHasChanged();
+    }
+}

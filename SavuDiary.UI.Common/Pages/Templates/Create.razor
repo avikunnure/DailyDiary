@@ -1,0 +1,150 @@
+﻿@page "/templates/Create"
+@page "/templates/edit/{id:guid}"
+@inject IDataServices<Template> dataServices
+@inject IDataServices<Customer> custDataServices
+@inject IDataServices<Product> productServices
+@inject NavigationManager navigator
+
+
+<div class="card">
+    <EditForm Model="@model" OnValidSubmit="@OnSumbited">
+        <div class="card-header">
+            <div class="col-6">
+                <button class="btn btn-primary " type="submit"> Submit</button>
+                <a href="templates" type="button" class="btn btn-info">
+                    List
+                </a>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <div class="row">
+                
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputSelect placeholder="CustomerId" class="form-select" @bind-Value="model.CustomerId">
+                            <option value="@Guid.Empty">
+                                -- None Select --
+                            </option>
+                            @foreach (var item in customers.OrderBy(x => x.SequenceNo))
+                            {
+                                <option value="@item.Id">
+                                    @($"{item.FirstName} {item.LastName} (Seq. No. : {item.SequenceNo})")
+                                </option>
+                            }
+                        </InputSelect>
+                        <label for="CustomerId">Customer</label>
+                        <ValidationMessage For="()=>model.CustomerId"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputSelect id="ProductId"
+                                     placeholder="ProductId"
+                                     class="form-select pb-1"
+                                     @bind-Value="model.ProductId">
+                            <option value="@Guid.Empty">
+                                -- None Select --
+                            </option>
+                            @foreach (var item in products)
+                            {
+                                <option value="@item.Id">
+                                    @item.Name
+                                </option>
+                            }
+                        </InputSelect>
+                        <label for="ProductId">Product Id</label>
+                        <ValidationMessage For="()=>model.ProductId"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputDate Type="InputDateType.DateTimeLocal" id="ApplicableDatetime"
+                                   placeholder="ApplicableDatetime"
+                                   class="form-control pb-1"
+                                   @bind-Value="model.ApplicableDatetime">
+
+                        </InputDate>
+                        <label for="ApplicableDatetime">ApplicableDatetime</label>
+                        <ValidationMessage For="()=>model.ApplicableDatetime"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputNumber id="Quantity"
+                                     placeholder="Quantity"
+                                     class="form-control pb-1"
+                                     @bind-Value="model.Quantity">
+                            
+                        </InputNumber>
+                        <label for="Quantity">Quantity</label>
+                        <ValidationMessage For="()=>model.Quantity"></ValidationMessage>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="card-footer"></div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public Guid id { get; set; }
+
+    public Template model { get; set; } = new Template();
+    private List<Customer> customers { get; set; } = new List<Customer>();
+    private List<Product> products { get; set; } = new List<Product>();
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != Guid.Empty)
+        {
+            var temp = await dataServices.Get(new DataParams("", id));
+            if (temp.Result != null)
+            {
+                model = temp.Result;
+            }
+        }
+        var cust = await custDataServices.GetAll();
+        if (cust.Result != null)
+        {
+            customers = cust.Result.ToList();
+        }
+        var prods = await productServices.GetAll();
+        if (prods.Result != null)
+        {
+            products = prods.Result.ToList();
+        }
+    }
+
+    protected async Task OnSumbited()
+    {
+        if (id != Guid.Empty)
+        {
+            var res = await dataServices.Put(model, new DataParams("", id));
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    toaster.ShowToaster("Saved Successfully", ToastLevel.Success);
+                    navigator.NavigateTo("/Templates");
+                }
+            }
+        }
+        else
+        {
+            var res = await dataServices.Post(model);
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    toaster.ShowToaster("Saved Successfully", ToastLevel.Success);
+                    navigator.NavigateTo("/Templates");
+                }
+            }
+        }
+    }
+
+   
+}

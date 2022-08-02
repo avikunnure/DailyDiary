@@ -1,0 +1,135 @@
+﻿@inject IDataServices<Product> productServices
+@using SavuDiary.UI.Common.Components
+<div class="list-group-item" style="@DisplayRow" >
+
+    <div class="row">
+        <div class="col-lg-2 col-6">
+            <div class="form-floating mb-1">
+                <InputSelect id="ProductId"
+                             placeholder="ProductId"
+                             class="form-select pb-1"
+                             @bind-Value="Model.ProductId">
+                    <option value="@Guid.Empty">
+                        -- None Select --
+                    </option>
+                    @foreach (var item in products)
+                    {
+                        <option value="@item.Id">
+                            @item.Name
+                        </option>
+                    }
+                </InputSelect>
+                <label for="ProductId">Product Id</label>
+                <ValidationMessage For="()=>Model.ProductId"></ValidationMessage>
+            </div>
+        </div>
+        <div class="col-lg-2 col-3">
+            <div class="form-floating mb-1">
+                <InputNumber @bind-Value="Model.Price"
+                             @onblur="CalculatesRowDetails"
+                             placeholder="Price"
+                             class="form-control" />
+                <label for="Price">Price</label>
+                <ValidationMessage For="()=>Model.Price" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-3">
+            <div class="form-floating mb-1">
+                <InputNumber @bind-Value="Model.Quantity"
+                             @onblur="CalculatesRowDetails"
+                             placeholder="Quantity"
+                             class="form-control" />
+                <label for="Quantity">Qty</label>
+                <ValidationMessage For="()=>Model.Quantity" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-3">
+            <div class="form-floating mb-1">
+                <InputNumber @bind-Value="Model.Discount"
+                             @onblur="CalculatesRowDetails"
+                             placeholder="Discount"
+                             class="form-control" />
+                <label for="Discount">Dis.Amt.</label>
+                <ValidationMessage For="()=>Model.Discount" />
+            </div>
+        </div>
+        <div class="col-lg-1 col-3">
+            <TaxRecordDetailComp 
+                                 TaxRecordDetailList="Model.TaxRecordDetails"
+                                 OnTaxCalculated="TaxCalculated"
+                                 ProductId="Model.ProductId"
+                                 RecordDetailId="Model.Id"
+                                 TaxRecordType="SaleTax"
+                                 RecordId="Model.SaleId"
+                                 TaxBasedOnAmt="Model.TotalAmount" />
+        </div>
+        <div class="col-lg-2 col-3">
+            <div class="form-floating mb-1">
+                <InputNumber @bind-Value="Model.NetAmount"
+                             @onblur="CalculatesRowDetails"
+                             class="form-control"
+                             readonly />
+                <label for="NetAmount">Net.Amt.</label>
+                <ValidationMessage For="()=>Model.NetAmount" />
+            </div>
+        </div>
+        <div class="col-lg-1 col-1" style="padding-top: 10px;padding-left: 0px;">
+            <span class="oi oi-trash" @onclick="HandleDelete" style="fill:red;stroke: red;"></span>
+        </div>
+    </div>
+    <hr />
+</div>
+@code {
+    [Parameter]
+    public SaleDetail Model { get; set; } = new SaleDetail();
+
+    [Parameter]
+    public EventCallback CalculationChanged { get; set; }
+
+
+    protected IList<Product> products { get; set; } = new List<Product>();
+    private string DisplayRow = "";
+    private decimal TaxAmount = 0;
+    private bool IsDisplayTaxBlock { get; set; } = false;
+    private string classNames { get { return IsDisplayTaxBlock != true ? "d-none" : "d-block"; } }
+   
+    protected override async Task OnInitializedAsync()
+    {
+        var prods = await productServices.GetAll();
+        if (prods.Result != null)
+        {
+            products = prods.Result.ToList();
+        }
+        if (Model.TaxRecordDetails == null)
+        {
+            Model.TaxRecordDetails = new List<TaxRecordDetails>();
+        }
+    }
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+    protected void HandleDelete()
+    {
+        Model.IsActive = false;
+        DisplayRow = "display:none;";
+        StateHasChanged();
+    }
+    protected async Task CalculatesRowDetails()
+    {
+
+        Model.TotalAmount = (Model.Quantity * Model.Price) - Model.Discount;
+        Model.NetAmount = Model.TotalAmount + TaxAmount;
+        if (CalculationChanged.HasDelegate)
+        {
+            await CalculationChanged.InvokeAsync();
+        }
+        StateHasChanged();
+    }
+    private async Task TaxCalculated(decimal values)
+    {
+        TaxAmount = values;
+       await CalculatesRowDetails();
+    }
+
+}

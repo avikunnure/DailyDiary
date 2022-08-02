@@ -1,0 +1,200 @@
+﻿@inject IDataServices<TaxRuleModel> taxServices
+@inject ToasterServices toaster
+<div class="row">
+    <div class="col-12">
+        <div class="input-group mb-1">
+            <select class="form-select col-11" @onchange='OnTaxChanges'>
+                <option value="@Guid.Empty"> --None Selected-- </option>
+                @foreach (var item in taxRuleModels)
+                {
+                    <option value="@item.TaxRule.Id" selected=@(TaxRuleId == item.TaxRule.Id)>
+                        @item.TaxRule.RuleName
+                    </option>
+                }
+            </select>
+            <button type="button" class="btn btn-sm btn-outline-primary col-1" @onclick="()=>_modalPopup.Open()">i</button>
+        </div>
+    </div>
+    <div class="col-12">
+        @if (TaxRecordDetailList != null)
+        {
+            <label>@TaxSelectedNames tax .</label>
+            <label>
+                : @(TaxRecordDetailList.Where(x => x.IsActive == true).Sum(x => x.TaxAmount))
+            </label>
+
+        }
+    </div>
+</div>
+
+
+<ModalPopup @ref="_modalPopup">
+    <ModalTitle>Tax Detail</ModalTitle>
+    <ModalBody>
+        @if (TaxRecordDetailList != null)
+        {
+            <div class="row">
+                <div class="col-sm-6  px-1  py-2 text-center"> Taxable value</div>
+                <div class="col-sm-6  px-1  py-2 text-center">: @TaxBasedOnAmt</div>
+
+            </div>
+            @if (TaxRecordDetailList.Any(X => X.IsActive))
+            {
+                foreach (var item in TaxRecordDetailList.Where(X => X.IsActive))
+                {
+                    <div class="row">
+                        <div class="col-sm-6  px-1  py-2 text-center"> @item.TaxName ( @item.TaxPercenatage )</div>
+                        <div class="col-sm-6  px-1  py-2 text-center">: @item.TaxAmount</div>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="row text-center"> No data available </div>
+            }
+            <div class="row">
+                <div class="col-sm-6  px-1  py-2 text-center"> Total Tax</div>
+                <div class="col-sm-6  px-1  py-2 text-center">: @TaxRecordDetailList.Where(X => X.IsActive).Sum(x=>x.TaxAmount)</div>
+
+            </div>
+        }
+    </ModalBody>
+</ModalPopup>
+
+
+@code {
+    [Parameter]
+    public List<TaxRecordDetails> TaxRecordDetailList { get; set; } = new List<TaxRecordDetails>();
+    [Parameter]
+    public string TaxRecordType { get; set; }
+    [Parameter]
+    public Guid ProductId { get; set; }
+    [Parameter]
+    public Guid RecordId { get; set; }
+    [Parameter]
+    public Guid RecordDetailId { get; set; }
+
+    private decimal previousValueofAmt = 0;
+
+    [Parameter]
+    public Decimal TaxBasedOnAmt
+    {
+        get { return _TaxBasedValues; }
+        set
+        {
+            _TaxBasedValues = value;
+            if (previousValueofAmt != value)
+            {
+                Console.WriteLine($"Value changes at {DateTime.Now} :  {value}");
+                Task.Run(async () => await CalculateTax());
+                previousValueofAmt = value;
+            }
+
+        }
+    }
+    [Parameter]
+    public EventCallback<decimal> OnTaxCalculated { get; set; }
+
+
+
+
+    private decimal _TaxBasedValues { get; set; }
+    private string TaxSelectedNames { get; set; }
+
+    private ModalPopup _modalPopup { get; set; } = new ModalPopup();
+
+    private Guid TaxRuleId { get; set; }
+    private List<TaxRuleModel> taxRuleModels { get; set; } = new List<TaxRuleModel>();
+
+
+    private async Task OnTaxChanges(ChangeEventArgs args)
+    {
+        if (args != null)
+        {
+            if (args.Value != null)
+            {
+                TaxRuleId = Guid.Parse(args.Value.ToString());
+            }
+        }
+        var taxdetail = await taxServices.Get(new DataParams("", TaxRuleId));
+        if (taxdetail.Result != null)
+        {
+            TaxSelectedNames = taxdetail.Result.TaxRule.RuleName;
+        }
+        bool isfound = false;
+        TaxRecordDetailList.ForEach(x =>
+        {
+            x.IsActive = false;
+            if (x.TaxId == TaxRuleId)
+            {
+                x.IsActive = true;
+                isfound = true;
+            }
+        });
+
+        if (isfound != true)
+        {
+            if (taxdetail.Result != null)
+            {
+                foreach (var item in taxdetail.Result.TaxRuleDetails)
+                {
+                    TaxRecordDetailList.Add(new TaxRecordDetails()
+                        {
+                            Dated = DateTime.UtcNow,
+                            IsActive = true,
+                            ProductId = ProductId,
+                            RecordDetailId = RecordDetailId,
+                            RecordId = RecordDetailId,
+                            TaxId = TaxRuleId,
+                            TaxName = item.PerticularNames,
+                            TaxPercenatage = item.TaxPercentage,
+                            RecordTypeName = TaxRecordType,
+
+                        });
+                }
+                TaxSelectedNames = taxdetail.Result.TaxRule.RuleName;
+            }
+        }
+
+        await CalculateTax();
+    }
+
+    protected async Task CalculateTax()
+    {
+        decimal amount = 0;
+        TaxRecordDetailList.ForEach(x =>
+        {
+            x.TaxAmount = (TaxBasedOnAmt * x.TaxPercenatage) / 100;
+            amount += x.TaxAmount;
+        });
+        await OnTaxCalculated.InvokeAsync(amount);
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var taxes = await taxServices.GetAll();
+        if (taxes.Result != null)
+        {
+            taxRuleModels = taxes.Result.ToList();
+        }
+
+    }
+    protected override void OnParametersSet()
+    {
+        if (TaxRecordDetailList == null)
+        {
+            TaxRecordDetailList = new List<TaxRecordDetails>
+    ();
+        }
+        else
+        {
+            TaxRuleId = TaxRecordDetailList.Where(x => x.IsActive).FirstOrDefault() != null
+                    ? TaxRecordDetailList.Where(x => x.IsActive).FirstOrDefault().TaxId
+                    : Guid.Empty;
+           
+        }
+        base.OnParametersSet();
+    }
+    }

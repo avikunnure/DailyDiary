@@ -62,3 +62,128 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.form-floating {
+    position: relative;
+}
+
+    .form-floating > .form-control,
+    .form-floating > .form-select {
+        height: calc(2.5rem + 1px);
+        line-height: 0.75;
+    }
+
+    .form-floating > label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 1rem 0.50rem;
+        pointer-events: none;
+        border: 1px solid transparent;
+        transform-origin: 0 0;
+        transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+    }
+
+@media (prefers-reduced-motion: reduce) {
+    .form-floating > label {
+        transition: none;
+    }
+}
+
+.form-floating > .form-control {
+    padding: 0.55rem 0.50rem;
+}
+
+    .form-floating > .form-control::-moz-placeholder {
+        color: transparent;
+    }
+
+    .form-floating > .form-control::placeholder {
+        color: transparent;
+    }
+
+    .form-floating > .form-control:not(:-moz-placeholder-shown) {
+        padding-top: 1rem;
+        padding-bottom: 0.600rem;
+    }
+
+    .form-floating > .form-control:focus, .form-floating > .form-control:not(:placeholder-shown) {
+        padding-top: 1rem;
+        padding-bottom: 0.600rem;
+    }
+
+    .form-floating > .form-control:-webkit-autofill {
+        padding-top: 1rem;
+        padding-bottom: 0.600rem;
+    }
+
+.form-floating > .form-select {
+    padding-top: 1rem;
+    padding-bottom: 0.600rem;
+}
+
+.form-floating > .form-control:not(:-mo-placeholder-shown) ~ label {
+    opacity: 0.75;
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label {
+    opacity: 0.75;
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+}
+
+.form-floating > .form-control:-webkit-autofill ~ label {
+    opacity: 0.75;
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+}
+
+.list-group-item {
+    padding: 0.25rem 0.25rem !important;
+}
+
+.card-body {
+    padding: 4px;
+}
+
+@media (min-width: 641px) {
+    .card-body {
+        padding: 10px;
+    }
+
+    .list-group-item {
+        padding: 0.25rem 0.25rem !important;
+    }
+}
+
+.list-group-item > .row {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+    .list-group-item > .row > * {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+.list-group-item > hr {
+    margin:1px;
+}
+input[type=number].form-control {
+    text-align: right;
+}
+input:read-only{
+    -webkit-appearance:none;
+    -moz-appearance:none;
+}
+.oi.oi-trash {
+    color: red;
+}
+
+.accordion-button {
+    padding: 10px;
+    width: auto;
+    width: 40px;
+    margin: 0px;
+}

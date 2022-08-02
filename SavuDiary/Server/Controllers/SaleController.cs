@@ -16,6 +16,46 @@ namespace SavuDiary.Server.Controllers
         }
 
         // GET: api/<SaleController>
+        [HttpGet("GetSale")]
+        public IActionResult GetSale(Guid CustomerId,DateTime date)
+        {
+            try
+            {
+                var result = _saleRepository.GetSale(CustomerId,date).Result;
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result.Result);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        // GET: api/<SaleController>
+        [HttpGet("GetByFilters")]
+        public IActionResult GetByFilters(DateTime fromdate,DateTime todate,Guid CustomerId)
+        {
+            try
+            {
+                var result = _saleRepository.SaleByFilters(fromdate,todate,CustomerId).Result;
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        // GET: api/<SaleController>
         [HttpGet]
         public IActionResult Get()
         {

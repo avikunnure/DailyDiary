@@ -1,4 +1,5 @@
 ﻿using SavuDiary.Shared;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SavuDiary.Server.DataLayers
 {
@@ -10,6 +11,15 @@ namespace SavuDiary.Server.DataLayers
         public decimal Price { get; set; }
         public decimal Rate { get; set; }
         public DateTime Date { get; set; }
+        public decimal OutQuantity { get; set; }
+        public decimal InQuantity { get; set; }
+        public Guid ProductId { get; set; }
+        public Guid RecordId { get; set; }
+        public Guid? RecordDetailId { get; set; }
+
+        [NotMapped]
+        public string ProductName { get; set; } = "";
+
 
         public static implicit operator StockMangementEntity(StockMangement stockMangement)
         {
@@ -23,7 +33,13 @@ namespace SavuDiary.Server.DataLayers
                 Date = stockMangement.Date,
                 Id = stockMangement.Id,
                 IsActive = stockMangement.IsActive,
-
+                InQuantity = stockMangement.InQuantity,
+                OutQuantity = stockMangement.OutQuantity,
+                ProductId=stockMangement.ProductId,
+                ProductName=stockMangement.ProductName,
+                RecordDetailId=stockMangement.RecordDetailId,
+                RecordId=stockMangement.RecordId,
+                
 
             };
         }
@@ -40,6 +56,13 @@ namespace SavuDiary.Server.DataLayers
                 Date = stockMangement.Date,
                 Id = stockMangement.Id,
                 IsActive = stockMangement.IsActive,
+                InQuantity = stockMangement.InQuantity,
+                OutQuantity = stockMangement.OutQuantity,
+                ProductId = stockMangement.ProductId,
+                ProductName = stockMangement.ProductName,
+                RecordDetailId = stockMangement.RecordDetailId,
+                RecordId = stockMangement.RecordId,
+
             };
         }
     }

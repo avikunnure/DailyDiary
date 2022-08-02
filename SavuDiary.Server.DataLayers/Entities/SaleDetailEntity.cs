@@ -8,12 +8,16 @@ namespace SavuDiary.Server.DataLayers
         public Guid ProductId { get; set; }
         public Decimal Price { get; set; }
         public Decimal Quantity { get; set; }
+        public Decimal StockQuantity { get; set; }
         public Decimal TotalAmount { get; set; }
         public Decimal Discount { get; set; }
         public Decimal NetAmount { get; set; }
 
         [NotMapped]
         public string ProductName { get; set; } = "";
+
+        [NotMapped]
+        public List<TaxRecordDetailEntity> TaxRecordDetailEntity { get; set; }
 
         public static implicit operator SaleDetailEntity(SaleDetail saleDetail)
         {
@@ -29,7 +33,9 @@ namespace SavuDiary.Server.DataLayers
                 NetAmount = saleDetail.NetAmount,
                 ProductName = saleDetail.ProductName,
                 Id=saleDetail.Id,
-                
+                TaxRecordDetailEntity = saleDetail.TaxRecordDetails != null ?
+                    saleDetail.TaxRecordDetails.Select(x => (TaxRecordDetailEntity)x).ToList()
+                    : new List<TaxRecordDetailEntity>(),
             };
         }
         public static implicit operator SaleDetail(SaleDetailEntity saleDetail)
@@ -46,7 +52,9 @@ namespace SavuDiary.Server.DataLayers
                 NetAmount = saleDetail.NetAmount,
                 ProductName = saleDetail.ProductName,
                 Id = saleDetail.Id,
-
+                TaxRecordDetails = saleDetail.TaxRecordDetailEntity != null ?
+                    saleDetail.TaxRecordDetailEntity.Select(x => (TaxRecordDetails)x).ToList()
+                    : new List<TaxRecordDetails>(),
             };
         }
     }

@@ -7,6 +7,8 @@ namespace SavuDairy.Server.Application.Interfaces
     public interface ISaleServices : IDataPersistServices<Sale>
         , IFetchServices<Sale>
     {
-       
+        Task<DataResponses< Sale>> GetSale(Guid CustomerId, DateTime date);
+
+        DataResponses< IEnumerable<Sale>> SaleByFilters(DateTime fromDate, DateTime toDate, Guid Customerid);
     }
 }

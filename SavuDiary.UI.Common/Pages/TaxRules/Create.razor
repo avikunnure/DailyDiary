@@ -1,0 +1,140 @@
+﻿@page "/taxrules/Create"
+@page "/taxrules/edit/{id:guid?}"
+@inject IDataServices<TaxRuleModel> dataServices
+@inject NavigationManager navigator
+
+<div class="card">
+    <EditForm Model="@model" OnValidSubmit="@OnSumbited">
+        <div class="card-header">
+            <div class="col-6">
+                <button class="btn btn-primary " type="submit"> Submit</button>
+                <a href="taxrules" type="button" class="btn btn-info">
+                    List
+                </a>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <div class="row">
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputText placeholder="RuleName"
+                                     class="form-control"
+                                     @bind-Value="model.TaxRule.RuleName"
+                                      />
+                        <label for="RuleName">Name</label>
+                        <ValidationMessage For="()=>model.TaxRule.RuleName" />
+                    </div>
+                </div>
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputText placeholder="Descriptions"
+                                     class="form-control"
+                                     @bind-Value="model.TaxRule.Descriptions"
+                                      />
+                        <label for="Descriptions">Descriptions</label>
+                        <ValidationMessage For="()=>model.TaxRule.RuleName" />
+                    </div>
+                </div>
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputText placeholder="TaxType"
+                                     class="form-control"
+                                     @bind-Value="model.TaxRule.TaxType"
+                                      />
+                        <label for="TaxType">TaxType</label>
+                        <ValidationMessage For="()=>model.TaxRule.TaxType" />
+                    </div>
+                </div>
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputNumber placeholder="TaxPercentage"
+                                     class="form-control"
+                                     @bind-Value="model.TaxRule.TaxPercentage"
+                                      />
+                        <label for="TaxPercentage">TaxPercentage</label>
+                        <ValidationMessage For="()=>model.TaxRule.TaxPercentage" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="list-group">
+                    <div class="list-group-item list-group-item-padding">
+                        <button type="button" class="btn btn-sm btn-secondary" @onclick="AddNewHandle">
+                            + Add
+                        </button>
+                    </div>
+                    @foreach (var item in model.TaxRuleDetails)
+                   {
+                        <TaxDetailRow taxRuleDetail="item"  />
+                    }
+                </div>
+            </div>
+
+        </div>
+    </EditForm>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public Guid id { get; set; }
+
+    private TaxRuleModel model { get; set; } = new TaxRuleModel();
+  
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != Guid.Empty)
+        {
+            var taxmodel = await dataServices.Get(new DataParams("", id));
+            if (taxmodel.Result != null)
+            {
+                model = taxmodel.Result;
+            }
+        }
+
+    }
+    protected async Task OnSumbited()
+    {
+        if (id != Guid.Empty)
+        {
+            var res = await dataServices.Put(model);
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    toaster.ShowToaster("Saved Successfully", ToastLevel.Success);
+                    navigator.NavigateTo("/taxrules");
+                }
+            }
+        }
+        else
+        {
+            var res = await dataServices.Post(model);
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    toaster.ShowToaster("Saved Successfully", ToastLevel.Success);
+                    navigator.NavigateTo("/taxrules");
+                }
+            }
+        }
+    }
+    protected Task AddNewHandle()
+    {
+        var detail = new TaxRuleDetail()
+            {
+               
+                Id = Guid.Empty,
+                IsActive = true,
+               
+            };
+        model.TaxRuleDetails.Add(detail);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+}

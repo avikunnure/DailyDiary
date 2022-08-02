@@ -11,6 +11,8 @@ namespace SavuDiary.Shared
         public Decimal Discount { get; set; }
         public Decimal NetAmount { get; set; }
 
+        public List<TaxRecordDetails> TaxRecordDetails { get; set; }
+
         [NotMapped]
         public string ProductName { get; set; } = "";
     }

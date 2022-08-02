@@ -6,7 +6,7 @@ using SavuDiary.UI.Common;
 
 namespace SavuDiary.UI
 {
-    public class SaleServices : IDataServices<Sale>
+    public class SaleServices : ISaleDataServices
     {
         private readonly ISaleServices _services;
         public SaleServices(ISaleServices services)
@@ -94,6 +94,36 @@ namespace SavuDiary.UI
             catch
             {
                 return new DataResponses<Sale>(t, false);
+            }
+        }
+
+        public async Task<DataResponses<Sale>> GetSale(Guid CustomerId, DateTime date)
+        {
+            try
+            {
+                var result = await _services.GetSale(CustomerId,date);
+
+                return result;
+
+            }
+            catch
+            {
+                return new DataResponses<Sale>( false);
+            }
+        }
+
+     
+
+        public Task<DataResponses<IEnumerable<Sale>>> SaleByFilters(DateTime fromDate, DateTime toDate, Guid Customerid)
+        {
+            try
+            {
+                var result = _services.SaleByFilters(fromDate, toDate, Customerid);
+                return Task.FromResult( result);
+            }
+            catch
+            {
+                return Task.FromResult(new DataResponses<IEnumerable<Sale>>(false));
             }
         }
     }

@@ -9,8 +9,12 @@
     <EditForm Model="@model" OnValidSubmit="@OnSumbited">
         <div class="card-header">
             <div class="col-6">
-                <button class="btn btn-primary " type="submit"> Submit</button>
-                <a href="purchases" type="button" class="btn btn-info">
+                <button class="btn btn-primary mx-1" type="submit"> Submit</button>
+                @if (id != Guid.Empty)
+                {
+                    <button class="btn btn-danger mx-1" type="button" @onclick="OnDelete">Delete</button>
+                }
+                <a href="purchases" type="button" class="btn btn-info mx-1">
                     List
                 </a>
             </div>
@@ -19,96 +23,79 @@
         <div class="card-body">
             <DataAnnotationsValidator></DataAnnotationsValidator>
             <div class="row">
-                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 ">
-                    <div class="form-floating mb-3">
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-1">
                         <InputDate placeholder="DateTime" class="form-control" @bind-Value="model.DateTime"></InputDate>
-                        <label for="DateTime">DateTime</label>
+                        <label class="" for="DateTime">DateTime</label>
                         <ValidationMessage For="()=>model.DateTime"></ValidationMessage>
                     </div>
                 </div>
-                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 ">
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
                     <div class="form-floating mb-3">
-                        <InputSelect placeholder="SupplierId" class="form-control" @bind-Value="model.SupplierId">
+                        <InputSelect placeholder="SupplierId" class="form-select" @bind-Value="model.SupplierId">
                             <option value="@Guid.Empty">
                                 -- None Select --
                             </option>
-                            @foreach (var item in customers.OrderBy(x=>new { x.FirstName,x.LastName}))
+                            @foreach (var item in customers.OrderBy(x => new { x.FirstName, x.LastName }))
                             {
                                 <option value="@item.Id">
                                     @($"{item.FirstName} {item.LastName} - Mob No : {item.MobileNo}")
                                 </option>
                             }
                         </InputSelect>
-                        <label for="SupplierId">Customer Name</label>
+                        <label for="SupplierId">Supplier</label>
                         <ValidationMessage For="()=>model.SupplierId"></ValidationMessage>
                     </div>
                 </div>
             </div>
-            <div class="row table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th colspan="5"></th>
-                            <th class="text-end">
-                                <button type="button" class="btn btn-sm" @onclick="AddNewHandle">+(Add)</button>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                Name
-                            </th>
-                            <th>
-                                Qauntity
-                            </th>
-                            <th>
-                                Rate
-                            </th>
-                            <th>
-                                Discount Amt.
-                            </th>
-                            <th>
-                                Amount
-                            </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (var i = 0; i < model.PurchaseDetails.Count; i++)
-                        {
-                            <PurchaseDetailRow CalculationChanged="ChangeCalculationHandler" PurchaseDetail="model.PurchaseDetails[i]"></PurchaseDetailRow>
-                        }
-                    </tbody>
-                </table>
+            <div class="col-12">
+                <div class="list-group">
+                    <div class="list-group-item list-group-item-padding">
+                        <button type="button" class="btn btn-sm btn-secondary" @onclick="AddNewHandle">
+                            + Add
+                        </button>
+                    </div>
+                    @for (var i = 0; i < model.PurchaseDetails.Count; i++)
+                    {
+                        <PurchaseDetailRow CalculationChanged="ChangeCalculationHandler" PurchaseDetail="model.PurchaseDetails[i]"></PurchaseDetailRow>
+                    }
+                </div>
             </div>
+
             <div class="row">
-                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 ">
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
                     <div class="form-floating mb-3">
-                        <InputNumber placeholder="Amount" class="form-control" @bind-Value="model.Amount" readonly></InputNumber>
+                        <InputNumber placeholder="Amount"
+                                     class="form-control"
+                                     @bind-Value="model.Amount"
+                                     @onblur="ChangeCalculationHandler"
+                                     readonly />
                         <label for="Amount">Amount</label>
-                        <ValidationMessage For="()=>model.Amount"></ValidationMessage>
+                        <ValidationMessage For="()=>model.Amount" />
                     </div>
                 </div>
-                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 ">
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
                     <div class="form-floating mb-3">
                         <InputNumber placeholder="DiscountAmount" class="form-control" @bind-Value="model.DiscountAmount" @onblur="ChangeCalculationHandler"></InputNumber>
                         <label for="DiscountAmount">DiscountAmount</label>
                         <ValidationMessage For="()=>model.DiscountAmount"></ValidationMessage>
                     </div>
                 </div>
-                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 ">
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
                     <div class="form-floating mb-3">
-                        <InputNumber placeholder="NetAmount" class="form-control" @bind-Value="model.NetAmount" readonly ></InputNumber>
-                        <label for="NetAmount">NetAmount</label>
-                        <ValidationMessage For="()=>model.NetAmount"></ValidationMessage>
+                        <InputNumber placeholder="NetAmount"
+                                     class="form-control"
+                                     @bind-Value="model.NetAmount"
+                                     @onblur="ChangeCalculationHandler"
+                                     readonly />
+                        <label for="NetAmount">Net Amount</label>
+                        <ValidationMessage For="()=>model.NetAmount" />
                     </div>
                 </div>
             </div>
         </div>
-        <div class="card-footer"></div>
     </EditForm>
 </div>
-
-
 @code {
 
     [Parameter]
@@ -160,6 +147,25 @@
             }
         }
     }
+
+    public async void OnDelete()
+    {
+
+        var result = await swal.ShowConfirmBox("Sure to Delete", "Are you sure to delete record!\n Once record get delete cannot recover.");
+        if (result)
+        {
+            var res = await purchaseDataServices.Delete(model);
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    toaster.ShowToaster("Deleted Successfully", ToastLevel.Success);
+                    navigator.NavigateTo("/purchases");
+                }
+            }
+
+        }
+    }
     protected Task AddNewHandle()
     {
         var detail = new PurchaseDetail()
@@ -182,8 +188,8 @@
 
     private Task ChangeCalculationHandler()
     {
-        model.Amount= model.PurchaseDetails.Where(x=>x.IsActive).Sum(x => x.NetAmount);
-        model.NetAmount =model.Amount- model.DiscountAmount;
+        model.Amount = model.PurchaseDetails.Where(x => x.IsActive).Sum(x => x.NetAmount);
+        model.NetAmount = model.Amount - model.DiscountAmount;
         return Task.CompletedTask;
     }
 }

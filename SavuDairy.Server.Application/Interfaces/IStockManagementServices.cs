@@ -7,6 +7,6 @@ namespace SavuDairy.Server.Application.Interfaces
     public interface IStockManagementServices : IDataPersistServices<StockMangement>
         , IFetchServices<StockMangement>
     {
-       
+       DataResponses< IEnumerable<StockMangement>> CurrentStockOnDate(DateTime fromDate, Guid? ProductId = null);
     }
 }

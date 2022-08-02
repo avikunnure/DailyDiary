@@ -1,0 +1,113 @@
+﻿@page "/sales"
+@inject NavigationManager nagivator
+@inject ISaleDataServices dataServices
+@inject IDataServices<Customer> custDataServices
+<h3>Sales</h3>
+<div class="card">
+    <div class="card-header">
+        <div class="col-12">
+            Sales >>
+            <a href="sales/create" type="button" class="btn btn-primary my-1">
+                Create
+            </a>
+        </div>
+        <div class="row">
+           <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
+                <div class="form-floating mb-1">
+                    <input placeholder="fromDate" class="form-control"
+                           @bind-value="@fromDate" @bind-value:event="onchange"
+                           type="date" />
+                    <label class="" for="fromDate"> from Date</label>
+
+                </div>
+            </div>
+            <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
+                <div class="form-floating mb-1">
+                    <input placeholder="toDate" class="form-control"
+                           @bind-value="@toDate" @bind-value:event="onchange"
+                           type="date" />
+                    <label class="" for="SaleDateTime">to Date</label>
+                </div>
+            </div>
+            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 ">
+                <div class="form-floating mb-1">
+                    <select id="CustomerId"
+                            @bind-value="@CustomerId"
+                            @bind-value:event="onchange"
+                            placeholder="CustomerId"
+                            class="form-select pb-1">
+                        <option value="@Guid.Empty">
+                            -- None Select --
+                        </option>
+                        @foreach (var item in customers)
+                        {
+                            <option value="@item.Id">
+                                @item.FirstName @item.LastName - @item.SequenceNo
+                            </option>
+                        }
+                    </select>
+                    <label for="ProductId">Product Id</label>
+                </div>
+            </div>
+            <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-12 col-sm-12 col-12 ">
+                <button class="btn btn-primary mx-1" @onclick="OnClickHandler" type="submit"> Submit</button>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Sale No</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ListOfSales)
+                {
+                    <tr @onclick='()=>nagivator.NavigateTo($"/sales/edit/{item.Id}")'>
+                        <td>
+                            @($"{item.CustomerName}")
+                        </td>
+                        <td>@item.SaleNo</td>
+                        <td>@item.SaleDateTime</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@code {
+    protected List<Sale> ListOfSales { get; set; } = new List<Sale>();
+
+    protected Guid CustomerId { get; set; }
+    protected DateTime fromDate { get; set; } = DateTime.Now;
+    protected DateTime toDate { get; set; } = DateTime.Now;
+    private List<Customer> customers { get; set; } = new List<Customer>();
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await dataServices.SaleByFilters(fromDate, toDate, CustomerId);
+        if (data.Result != null)
+        {
+            ListOfSales = data.Result.ToList();
+        }
+        var cust = await custDataServices.GetAll();
+        if (cust.Result != null)
+        {
+            customers = cust.Result.ToList();
+        }
+    }
+    private async Task OnClickHandler()
+    {
+        var cust = await dataServices.SaleByFilters(fromDate, toDate, CustomerId);
+        if (cust.Result != null)
+        {
+            ListOfSales = cust.Result.ToList();
+            StateHasChanged();
+        }
+    }
+}

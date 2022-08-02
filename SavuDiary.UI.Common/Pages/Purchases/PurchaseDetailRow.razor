@@ -1,0 +1,145 @@
+﻿@inject IDataServices<Product> productServices
+<div class="list-group-item" style="@DisplayRow" >
+
+    <div class="row">
+        <div class="col-lg-2 col-6">
+            <div class="form-floating mb-1">
+                <InputSelect id="ProductId"
+                             placeholder="ProductId"
+                             class="form-select pb-1"
+                             @bind-Value="PurchaseDetail.ProductId">
+                    <option value="@Guid.Empty">
+                        -- None Select --
+                    </option>
+                    @foreach (var item in products)
+                    {
+                        <option value="@item.Id">
+                            @item.Name
+                        </option>
+                    }
+                </InputSelect>
+                <label for="ProductId">Product Id</label>
+                <ValidationMessage For="()=>PurchaseDetail.ProductId"></ValidationMessage>
+            </div>
+        </div>
+        <div class="col-lg-2 col-3">
+            <div class="form-floating mb-1">
+                <InputNumber @bind-Value="PurchaseDetail.Price"
+                             @onblur="CalculatesRowDetails"
+                             placeholder="Price"
+                             class="form-control" />
+                <label for="Price">Price</label>
+                <ValidationMessage For="()=>PurchaseDetail.Price" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-3">
+            <div class="form-floating mb-1">
+                <InputNumber @bind-Value="PurchaseDetail.Quantity"
+                             @onblur="CalculatesRowDetails"
+                             placeholder="Quantity"
+                             class="form-control" />
+                <label for="Quantity">Qty</label>
+                <ValidationMessage For="()=>PurchaseDetail.Quantity" />
+            </div>
+        </div>
+        <div class="col-lg-2 col-3">
+            <div class="form-floating mb-1">
+                <InputNumber @bind-Value="PurchaseDetail.Discount"
+                             @onblur="CalculatesRowDetails"
+                             placeholder="Discount"
+                             class="form-control" />
+                <label for="Discount">Dis.Amt.</label>
+                <ValidationMessage For="()=>PurchaseDetail.Discount" />
+            </div>
+        </div>
+        <div class="col-lg-1 col-3">
+            <TaxRecordDetailComp 
+                                 TaxRecordDetailList="PurchaseDetail.TaxRecordDetails"
+                                 OnTaxCalculated="TaxCalculated"
+                                 ProductId="PurchaseDetail.ProductId"
+                                 RecordDetailId="PurchaseDetail.Id"
+                                 TaxRecordType="PurchaseTax"
+                                 RecordId="PurchaseDetail.PurchaseId"
+                                 TaxBasedOnAmt="PurchaseDetail.TotalAmount" />
+        </div>
+        <div class="col-lg-2 col-3">
+            <div class="form-floating mb-1">
+                <InputNumber @bind-Value="PurchaseDetail.NetAmount"
+                             @onblur="CalculatesRowDetails"
+                             class="form-control"
+                             readonly />
+                <label for="NetAmount">Net.Amt.</label>
+                <ValidationMessage For="()=>PurchaseDetail.NetAmount" />
+            </div>
+        </div>
+        <div class="col-lg-1 col-1" style="padding-top: 10px;padding-left: 0px;">
+            <span class="oi oi-trash" @onclick="HandleDelete" style="fill:red;stroke: red;"></span>
+        </div>
+    </div>
+    <hr />
+</div>
+@code {
+    [Parameter]
+    public PurchaseDetail PurchaseDetail { get; set; } = new PurchaseDetail();
+
+    [Parameter]
+    public EventCallback CalculationChanged { get; set; }
+
+
+    protected IList<Product> products { get; set; } = new List<Product>();
+    private string DisplayRow = "";
+    private decimal TaxAmount = 0;
+    private bool IsDisplayTaxBlock { get; set; } = false;
+    private string classNames { get { return IsDisplayTaxBlock != true ? "d-none" : "d-block"; } }
+    private void DisplaySetOnClick()
+    {
+        if (IsDisplayTaxBlock)
+        {
+            IsDisplayTaxBlock = false;
+        }
+        else
+        {
+            IsDisplayTaxBlock = true;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var prods = await productServices.GetAll();
+        if (prods.Result != null)
+        {
+            products = prods.Result.ToList();
+        }
+        if (PurchaseDetail.TaxRecordDetails == null)
+        {
+            PurchaseDetail.TaxRecordDetails = new List<TaxRecordDetails>();
+        }
+    }
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+    protected void HandleDelete()
+    {
+        PurchaseDetail.IsActive = false;
+        DisplayRow = "display:none;";
+        StateHasChanged();
+    }
+    protected async Task CalculatesRowDetails()
+    {
+
+        PurchaseDetail.TotalAmount = (PurchaseDetail.Quantity * PurchaseDetail.Price)-PurchaseDetail.Discount;
+        PurchaseDetail.NetAmount = PurchaseDetail.TotalAmount + TaxAmount;
+        if (CalculationChanged.HasDelegate)
+        {
+            await CalculationChanged.InvokeAsync();
+        }
+        StateHasChanged();
+    }
+    private async Task TaxCalculated(decimal values)
+    {
+        TaxAmount = values;
+       await CalculatesRowDetails();
+    }
+
+}

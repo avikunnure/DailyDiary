@@ -7,9 +7,9 @@ namespace SavuDairy.Server.Application.Implementations
 {
     public class StockMangementServices : IStockManagementServices
     {
-        private readonly IRepository<StockMangementEntity> _Repository;
+        private readonly IStockManagementRepository _Repository;
        
-        public StockMangementServices(IRepository<StockMangementEntity> repository)
+        public StockMangementServices(IStockManagementRepository repository)
         {
             _Repository = repository;
         }
@@ -83,6 +83,19 @@ namespace SavuDairy.Server.Application.Implementations
             catch
             {
                 return new DataResponses<StockMangement>(t, false);
+            }
+        }
+
+        public DataResponses<IEnumerable<StockMangement>> CurrentStockOnDate(DateTime fromDate, Guid? ProductId = null)
+        {
+            try
+            {
+                var res = _Repository.CurrentStockOnDate(fromDate,ProductId).Select(x => (StockMangement)x);
+                return new DataResponses<IEnumerable<StockMangement>>(res, true);
+            }
+            catch
+            {
+                return new DataResponses<IEnumerable<StockMangement>>(false);
             }
         }
     }

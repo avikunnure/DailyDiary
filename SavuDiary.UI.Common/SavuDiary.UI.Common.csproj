@@ -16,19 +16,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Pages\Customers.razor">
+    <Content Update="Pages\Customers\Index.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
     <Content Update="Pages\Index.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
-    <Content Update="Pages\Products.razor">
+    <Content Update="Pages\Products\Index.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
     <Content Update="Pages\Register.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
-    <Content Update="Pages\Sales.razor">
+    <Content Update="Pages\Sales\Index.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
    
@@ -95,6 +95,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SavuDiary\Shared\SavuDiary.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pages\Reports\ProfitLossReport\" />
   </ItemGroup>
 
 </Project>

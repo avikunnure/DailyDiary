@@ -50,7 +50,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Data\DataServices\Complex\" />
 	  <Folder Include="Pages\" />
 	</ItemGroup>
 

@@ -27,6 +27,7 @@ namespace SavuDiary.UI
             builder.Services.AddDataServices();
             builder.Services.AddDbReporitory();
             builder.Services.AddApplicationServices();
+            builder.Services.AddCommonUIServices();
             return builder.Build();
         }
     }

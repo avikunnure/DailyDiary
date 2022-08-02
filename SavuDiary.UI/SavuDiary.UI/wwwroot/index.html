@@ -5,9 +5,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 	<title>SavuDiary.UI</title>
 	<base href="/" />
-	<link rel="stylesheet" href="_content/SavuDiary.UI.Common/css/bootstrap/bootstrap.min.css" />
-	<link href="_content/SavuDiary.UI.Common/css/app.css" rel="stylesheet" />
+	<link rel="stylesheet" href="_content/SavuDiary.UI.Common/css/bootstrap/bootstrap.css" />
 	<link href="_content/SavuDiary.UI.Common/SavuDiary.UI.Common.bundle.scp.css" rel="stylesheet" />
+	<link href="_content/SavuDiary.UI.Common/css/app.css" rel="stylesheet" />
 	<link href="SavuDiary.UI.styles.css" rel="stylesheet" />
 </head>
 
@@ -15,7 +15,16 @@
 
 	<div class="status-bar-safe-area"></div>
 
-	<div id="app">Loading...</div>
+	<div id="app">
+		<div style="margin-left: auto;margin-right: auto;width: 0%;height: 0%; padding-top:50vh; ">
+			<div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+
+			</div>
+		</div>
+		<span style="text-align: center; width: 100vh; padding-left: 50vw;">
+			Loading ....
+		</span>
+	</div>
 
 	<div id="blazor-error-ui">
 		An unhandled error has occurred.
@@ -23,8 +32,9 @@
 		<a class="dismiss">🗙</a>
 	</div>
 	<script src="_content/SavuDiary.UI.Common/js/bootstrap/bootstrap.min.js"></script>
+	<script src="_content/SavuDiary.UI.Common/js/sweetalert/sweetalert.min.js"></script>
+	<script src="_content/SavuDiary.UI.Common/js/myswalfunctions.js"></script>
 	<script src="_framework/blazor.webview.js" autostart="false"></script>
-
 </body>
 
 </html>

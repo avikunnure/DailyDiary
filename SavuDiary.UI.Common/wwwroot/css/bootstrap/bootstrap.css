@@ -47,9 +47,9 @@
 body {
   margin: 0;
   font-family: var(--bs-font-sans-serif);
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
+  font-size: 0.75rem;
+  font-weight: 200;
+  line-height: 0.75;
   color: #212529;
   background-color: #fff;
   -webkit-text-size-adjust: 100%;
@@ -72,7 +72,7 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
   margin-top: 0;
   margin-bottom: 0.5rem;
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1;
 }
 
 h1, .h1 {
@@ -458,7 +458,7 @@ progress {
 .display-1 {
   font-size: calc(1.625rem + 4.5vw);
   font-weight: 300;
-  line-height: 1.2;
+  line-height: 1;
 }
 @media (min-width: 1200px) {
   .display-1 {
@@ -469,7 +469,7 @@ progress {
 .display-2 {
   font-size: calc(1.575rem + 3.9vw);
   font-weight: 300;
-  line-height: 1.2;
+  line-height: 1;
 }
 @media (min-width: 1200px) {
   .display-2 {
@@ -480,7 +480,7 @@ progress {
 .display-3 {
   font-size: calc(1.525rem + 3.3vw);
   font-weight: 300;
-  line-height: 1.2;
+  line-height: 1;
 }
 @media (min-width: 1200px) {
   .display-3 {
@@ -491,7 +491,7 @@ progress {
 .display-4 {
   font-size: calc(1.475rem + 2.7vw);
   font-weight: 300;
-  line-height: 1.2;
+  line-height: 1;
 }
 @media (min-width: 1200px) {
   .display-4 {
@@ -502,7 +502,7 @@ progress {
 .display-5 {
   font-size: calc(1.425rem + 2.1vw);
   font-weight: 300;
-  line-height: 1.2;
+  line-height: 1;
 }
 @media (min-width: 1200px) {
   .display-5 {
@@ -513,7 +513,7 @@ progress {
 .display-6 {
   font-size: calc(1.375rem + 1.5vw);
   font-weight: 300;
-  line-height: 1.2;
+  line-height: 1;
 }
 @media (min-width: 1200px) {
   .display-6 {
@@ -2129,7 +2129,7 @@ progress {
   padding-bottom: calc(0.375rem + 1px);
   margin-bottom: 0;
   font-size: inherit;
-  line-height: 1.5;
+  line-height: 1;
 }
 
 .col-form-label-lg {
@@ -2154,9 +2154,9 @@ progress {
   display: block;
   width: 100%;
   padding: 0.375rem 0.75rem;
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1;
   color: #212529;
   background-color: #fff;
   background-clip: padding-box;
@@ -2254,7 +2254,7 @@ progress {
   width: 100%;
   padding: 0.375rem 0;
   margin-bottom: 0;
-  line-height: 1.5;
+  line-height: 1;
   color: #212529;
   background-color: transparent;
   border: solid transparent;
@@ -2287,7 +2287,7 @@ progress {
 .form-control-lg {
   min-height: calc(1.5em + (1rem + 2px));
   padding: 0.5rem 1rem;
-  font-size: 1.25rem;
+  font-size: 1rem;
   border-radius: 0.3rem;
 }
 .form-control-lg::file-selector-button {
@@ -2335,9 +2335,9 @@ textarea.form-control-lg {
   width: 100%;
   padding: 0.375rem 2.25rem 0.375rem 0.75rem;
   -moz-padding-start: calc(0.75rem - 3px);
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 0.75;
   color: #212529;
   background-color: #fff;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
@@ -2582,70 +2582,6 @@ textarea.form-control-lg {
   background-color: #adb5bd;
 }
 
-.form-floating {
-  position: relative;
-}
-.form-floating > .form-control,
-.form-floating > .form-select {
-  height: calc(3.5rem + 2px);
-  line-height: 1.25;
-}
-.form-floating > label {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  padding: 1rem 0.75rem;
-  pointer-events: none;
-  border: 1px solid transparent;
-  transform-origin: 0 0;
-  transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
-}
-@media (prefers-reduced-motion: reduce) {
-  .form-floating > label {
-    transition: none;
-  }
-}
-.form-floating > .form-control {
-  padding: 1rem 0.75rem;
-}
-.form-floating > .form-control::-moz-placeholder {
-  color: transparent;
-}
-.form-floating > .form-control::placeholder {
-  color: transparent;
-}
-.form-floating > .form-control:not(:-moz-placeholder-shown) {
-  padding-top: 1.625rem;
-  padding-bottom: 0.625rem;
-}
-.form-floating > .form-control:focus, .form-floating > .form-control:not(:placeholder-shown) {
-  padding-top: 1.625rem;
-  padding-bottom: 0.625rem;
-}
-.form-floating > .form-control:-webkit-autofill {
-  padding-top: 1.625rem;
-  padding-bottom: 0.625rem;
-}
-.form-floating > .form-select {
-  padding-top: 1.625rem;
-  padding-bottom: 0.625rem;
-}
-.form-floating > .form-control:not(:-moz-placeholder-shown) ~ label {
-  opacity: 0.65;
-  transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
-}
-.form-floating > .form-control:focus ~ label,
-.form-floating > .form-control:not(:placeholder-shown) ~ label,
-.form-floating > .form-select ~ label {
-  opacity: 0.65;
-  transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
-}
-.form-floating > .form-control:-webkit-autofill ~ label {
-  opacity: 0.65;
-  transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
-}
-
 .input-group {
   position: relative;
   display: flex;
@@ -2676,9 +2612,9 @@ textarea.form-control-lg {
   display: flex;
   align-items: center;
   padding: 0.375rem 0.75rem;
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 0.75;
   color: #212529;
   text-align: center;
   white-space: nowrap;
@@ -2692,7 +2628,7 @@ textarea.form-control-lg {
 .input-group-lg > .input-group-text,
 .input-group-lg > .btn {
   padding: 0.5rem 1rem;
-  font-size: 1.25rem;
+  font-size: 1rem;
   border-radius: 0.3rem;
 }
 
@@ -2907,7 +2843,7 @@ textarea.form-control-lg {
 .btn {
   display: inline-block;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1;
   color: #212529;
   text-align: center;
   text-decoration: none;
@@ -2919,7 +2855,7 @@ textarea.form-control-lg {
   background-color: transparent;
   border: 1px solid transparent;
   padding: 0.375rem 0.75rem;
-  font-size: 1rem;
+  font-size: 0.75rem;
   border-radius: 0.25rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
@@ -3394,7 +3330,7 @@ textarea.form-control-lg {
 
 .btn-lg, .btn-group-lg > .btn {
   padding: 0.5rem 1rem;
-  font-size: 1.25rem;
+  font-size: 0.75rem;
   border-radius: 0.3rem;
 }
 
@@ -3462,7 +3398,7 @@ textarea.form-control-lg {
   min-width: 10rem;
   padding: 0.5rem 0;
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.75rem;
   color: #212529;
   text-align: left;
   list-style: none;
@@ -3954,7 +3890,7 @@ textarea.form-control-lg {
   padding-top: 0.3125rem;
   padding-bottom: 0.3125rem;
   margin-right: 1rem;
-  font-size: 1.25rem;
+  font-size: 1rem;
   text-decoration: none;
   white-space: nowrap;
 }
@@ -3986,7 +3922,7 @@ textarea.form-control-lg {
 
 .navbar-toggler {
   padding: 0.25rem 0.75rem;
-  font-size: 1.25rem;
+  font-size: 1rem;
   line-height: 1;
   background-color: transparent;
   border: 1px solid transparent;
@@ -5314,7 +5250,7 @@ textarea.form-control-lg {
 
 .modal-title {
   margin-bottom: 0;
-  line-height: 1.5;
+  line-height: 1;
 }
 
 .modal-body {
@@ -5506,7 +5442,7 @@ textarea.form-control-lg {
   font-family: var(--bs-font-sans-serif);
   font-style: normal;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1;
   text-align: left;
   text-align: start;
   text-decoration: none;
@@ -5608,7 +5544,7 @@ textarea.form-control-lg {
   font-family: var(--bs-font-sans-serif);
   font-style: normal;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1;
   text-align: left;
   text-align: start;
   text-decoration: none;
@@ -6041,7 +5977,7 @@ textarea.form-control-lg {
 
 .offcanvas-title {
   margin-bottom: 0;
-  line-height: 1.5;
+  line-height: 1;
 }
 
 .offcanvas-body {
@@ -7272,7 +7208,7 @@ textarea.form-control-lg {
 }
 
 .lh-sm {
-  line-height: 1.25 !important;
+  line-height: 1 !important;
 }
 
 .lh-base {

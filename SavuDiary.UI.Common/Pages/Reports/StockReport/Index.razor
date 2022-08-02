@@ -1,0 +1,95 @@
+﻿@inject IStockDataServices stockDataService
+@inject IDataServices<Product> productServices
+
+@inject NavigationManager nagivator
+@page "/Reports/stockreport"
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-lg-2 col-6">
+                <div class="form-floating mb-1">
+                    <select id="ProductId"
+                            @bind-value="@ProductId"
+                            @bind-value:event="onchange"
+                            placeholder="ProductId"
+                            class="form-select pb-1">
+                        <option value="@Guid.Empty">
+                            -- None Select --
+                        </option>
+                        @foreach (var item in products)
+                        {
+                            <option value="@item.Id">
+                                @item.Name
+                            </option>
+                        }
+                    </select>
+                    <label for="ProductId">Product Id</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-primary mx-1" @onclick="OnClickHandler" type="submit"> Submit</button>
+               
+            </div>
+
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+          
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product name</th>
+                                <th>Quantity</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in ListOfStocks)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.ProductName
+                                    </td>
+                                    <td>@(item.InQuantity - item.OutQuantity)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+</div>
+
+@code {
+    protected List<StockMangement> ListOfStocks { get; set; } = new List<StockMangement>();
+    protected IList<Product> products { get; set; } = new List<Product>();
+    protected Guid ProductId{ get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        var prods = await productServices.GetAll();
+        if (prods.Result != null)
+        {
+            products = prods.Result.ToList();
+        }
+        var cust = await stockDataService.GetStockMangements(DateTime.Now, ProductId);
+        if (cust.Result != null)
+        {
+            ListOfStocks = cust.Result.ToList();
+        }
+    }
+    private async Task OnClickHandler()
+    {
+        var cust = await stockDataService.GetStockMangements(DateTime.Now, ProductId);
+        if (cust.Result != null)
+        {
+            ListOfStocks = cust.Result.ToList();
+            StateHasChanged();
+        }
+    }
+}
+

@@ -8,6 +8,12 @@
         public decimal Price { get; set; }
         public decimal Rate { get; set; }
         public DateTime Date { get; set; }
+        public decimal OutQuantity { get; set; }
+        public decimal InQuantity { get; set; }
+        public Guid ProductId { get; set; }
+        public Guid RecordId { get; set; }
+        public Guid? RecordDetailId { get; set; }
 
+        public string ProductName { get; set; } = "";
     }
 }

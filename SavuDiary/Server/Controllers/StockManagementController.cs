@@ -34,6 +34,23 @@ namespace SavuDiary.Server.Controllers
                 throw;
             }
         }
+        [HttpGet("GetStocks")]
+        public IActionResult GetStocks(DateTime date,Guid? productid=null)
+        {
+            try
+            {
+                var result =  _stockManagementRepository.CurrentStockOnDate(date,productid);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result.Result);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         // GET api/<StockManagementController>/5
         [HttpGet("{id}")]

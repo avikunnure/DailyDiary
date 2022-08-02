@@ -20,6 +20,10 @@ namespace SavuDiary.Shared
         [Required]
         public Decimal NetAmount { get; set; }
 
+        public Guid? TaxRecordId { get; set; }
+
+        public List<TaxRecordDetails> TaxRecordDetails { get; set; }
+
         [NotMapped]
         public string ProductName { get; set; } = "";
     }

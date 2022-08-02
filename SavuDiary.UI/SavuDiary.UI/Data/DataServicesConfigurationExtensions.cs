@@ -15,6 +15,12 @@ namespace SavuDiary.UI
             services.AddScoped<IDataServices<Customer>, CustomerServices>();
             services.AddScoped<IDataServices<Purchase>, PurchaseServices>();
             services.AddScoped<IDataServices<Supplier>, SupplierServices>();
+            services.AddScoped<IDataServices<TaxRuleModel>, TaxRuleModelServices>();
+            services.AddScoped<IDataServices<TaxRecordDetails>, TaxRecordDetailsServices>();
+            services.AddScoped<IDataServices<Template>, TemplateServices>();
+            services.AddScoped<IStockDataServices, StockMangementServices>();
+            services.AddScoped<ISaleDataServices, SaleServices>();
+
             services.AddDbContext<Server.DataLayers.SavuDiaryDBContext>(options =>
             {
                 string dbpath = Path.Combine(FileSystem.AppDataDirectory, "SavuDiaryDB.db3");

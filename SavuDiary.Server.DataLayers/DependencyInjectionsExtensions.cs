@@ -18,9 +18,16 @@ namespace SavuDiary.Server.DataLayers
             services.AddTransient<IRepository<SaleDetailEntity>, SaleDetailRepository>();
             services.AddTransient<IRepository<SaleEntity>, SaleRepository>();
             services.AddTransient<IRepository<StockMangementEntity>, StockManagementRepository>();
+            services.AddTransient<IStockManagementRepository, StockManagementRepository>();
             services.AddTransient<IRepository<SaleEntry>, SaleEntryRepository>();
             services.AddTransient<IRepository<PurchaseEntry>, PurchaseEntryRepository>();
             services.AddTransient<IRepository<SupplierEntity>, SupplierRepository>();
+            services.AddTransient<IRepository<TaxRulesEntity>, TaxRulesRepository>();
+            services.AddTransient<IRepository<TaxRuleDetailsEntity>, TaxRuleDetailsRepository>();
+            services.AddTransient<IRepository<TaxRuleEntry>, TaxRuleEntryRepository>();
+            services.AddTransient<IRepository<TaxRecordDetailEntity>, TaxRecordDetailRepository>();
+            services.AddTransient<IRepository<TemplateEntity>, TemplateRepository>();
+            services.AddTransient<ISaleRepository, SaleRepository>();
             return services;
         }
     }

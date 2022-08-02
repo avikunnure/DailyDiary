@@ -6,7 +6,7 @@ using SavuDiary.UI.Common;
 
 namespace SavuDiary.Client
 {
-    public class SaleServices: IDataServices<Sale>
+    public class SaleServices: ISaleDataServices
     {
         private HttpClient httpClient { get; set; }
         public SaleServices(HttpClient httpClient)
@@ -130,6 +130,40 @@ namespace SavuDiary.Client
             catch
             {
                 return new DataResponses<Sale>(t, false);
+            }
+        }
+
+        public async Task<DataResponses<Sale>> GetSale(Guid CustomerId, DateTime date)
+        {
+            try
+            {
+                var res = await httpClient.GetFromJsonAsync<Sale>($"/api/Sale/GetSale?CustomerId={CustomerId}&date={date}");
+                if (res == null)
+                {
+                    return new DataResponses<Sale>();
+                }
+                return new DataResponses<Sale>(res);
+            }
+            catch
+            {
+                return new DataResponses<Sale>(false);
+            }
+        }
+
+        public async Task<DataResponses<IEnumerable<Sale>>> SaleByFilters(DateTime fromDate, DateTime toDate, Guid Customerid)
+        {
+            try
+            {
+                var res = await httpClient.GetFromJsonAsync<IEnumerable<Sale>>($"/api/Sale/GetByFilters?fromdate={fromDate}&todate={toDate}&CustomerId={Customerid}");
+                if (res == null)
+                {
+                    return new DataResponses<IEnumerable<Sale>>();
+                }
+                return new DataResponses<IEnumerable<Sale>>(res);
+            }
+            catch
+            {
+                return new DataResponses<IEnumerable<Sale>>();
             }
         }
     }

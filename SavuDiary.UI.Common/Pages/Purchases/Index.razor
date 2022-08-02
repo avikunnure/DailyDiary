@@ -1,0 +1,50 @@
+﻿@page "/purchases"
+@inject IDataServices<Purchase> dataServices
+@inject NavigationManager navigator
+
+<div class="card">
+    <div class="card-header">
+        <div class="col-12">
+            Purchases >>
+            <a href="purchases/create" type="button" class="btn btn-primary">
+                Create
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="list-group">
+
+
+
+            @foreach (var item in ListOfPurchases.OrderBy(x => x.PurchaseNo))
+            {
+                <NavLink href="@($"purchases/edit/{item.Id}")"
+                     class="list-group-item list-group-item-action"
+                     aria-current="true">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-3">From . @item.SupplierName</h6>
+
+                        <span class="mb-3"> Dated.: @item.DateTime</span>
+                    </div>
+                    <p class="mb-3">
+                        of the Amount.: @item.NetAmount
+                        <span class="mb-3" style="float:right"> Number. @item.PurchaseNo</span>
+                    </p>
+
+                </NavLink>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Purchase> ListOfPurchases { get; set; } = new List<Purchase>();
+    protected override async Task OnInitializedAsync()
+    {
+        var list = await dataServices.GetAll();
+        if (list.Result != null)
+        {
+            ListOfPurchases = list.Result.ToList();
+        }
+    }
+}

@@ -20,6 +20,9 @@ namespace SavuDairy.Server.Application.DependencyInjections
             services.AddTransient<ISaleServices, SaleServices>();
             services.AddTransient<ISupplierServices, SupplierServices>();
             services.AddTransient<IStockManagementServices, StockMangementServices>();
+            services.AddTransient<ITaxRuleServices, TaxRuleServices>();
+            services.AddTransient<ITaxRecordDetailsServices, TaxRecordDetailsServices>();
+            services.AddTransient<ITemplateServices, TemplateServices>();
             return services;
         }
     }

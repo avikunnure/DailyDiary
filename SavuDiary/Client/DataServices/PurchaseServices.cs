@@ -71,6 +71,7 @@ namespace SavuDiary.Client
                 }
                 else
                 {
+                    var stringresult=await result.Content.ReadAsStringAsync();
                     return new DataResponses<Purchase>(t, false);
                 }
             }

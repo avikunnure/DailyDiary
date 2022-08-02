@@ -7,10 +7,10 @@ namespace SavuDairy.Server.Application.Implementations
 {
     public class SaleServices : ISaleServices
     {
-        private readonly IRepository<SaleEntity> _Repository;
+        private readonly ISaleRepository _Repository;
         private readonly IRepository<SaleEntry> _EntryRepository;
 
-        public SaleServices(IRepository<SaleEntity> repository, IRepository<SaleEntry> entryRepository)
+        public SaleServices(ISaleRepository repository, IRepository<SaleEntry> entryRepository)
         {
             _Repository = repository;
             _EntryRepository = entryRepository;
@@ -85,6 +85,34 @@ namespace SavuDairy.Server.Application.Implementations
             catch
             {
                 return new DataResponses<Sale>(t, false);
+            }
+        }
+
+        public async Task< DataResponses< Sale>> GetSale(Guid CustomerId, DateTime date)
+        {
+            var result = new Sale();
+            var s=_Repository.GetSale(CustomerId, date);
+            if (s.Id != Guid.Empty)
+            {
+                result = await _EntryRepository.GetById(s.Id);
+            }
+            else
+            {
+                result=(Sale)s;
+            }
+            return  new DataResponses<Sale>(result,true);
+        }
+
+        public DataResponses< IEnumerable<Sale>> SaleByFilters(DateTime fromDate, DateTime toDate, Guid Customerid)
+        {
+            try
+            {
+                var res = _Repository.SaleByFilters(fromDate,toDate,Customerid).Select(x => (Sale)x).AsEnumerable();
+                return new DataResponses<IEnumerable<Sale>>(res, true);
+            }
+            catch
+            {
+                return new DataResponses<IEnumerable<Sale>>(false);
             }
         }
     }

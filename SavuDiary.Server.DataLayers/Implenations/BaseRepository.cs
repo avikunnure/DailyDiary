@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,28 +10,28 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace SavuDiary.Server.DataLayers
 {
-    public class SupplierRepository : IRepository<SupplierEntity>, IDisposable 
+    public class BaseRepository<TEnity> : IRepository<TEnity>, IDisposable where TEnity : BaseEntity
     {
         private bool disposedValue;
 
-        private SavuDiaryDBContext Context { get; }
-        public SupplierRepository(SavuDiaryDBContext context )
+        protected SavuDiaryDBContext Context { get; }
+        public BaseRepository(SavuDiaryDBContext context)
         {
             Context = context;
         }
 
-        public async Task<SupplierEntity> Insert(SupplierEntity entity)
+        public virtual async Task<TEnity> Insert(TEnity entity)
         {
             Context.Add(entity);
             await Context.SaveChangesAsync();
             return entity;
         }
 
-        public async Task<SupplierEntity> Update(SupplierEntity entity)
+        public virtual async Task<TEnity> Update(TEnity entity)
         {
             if (entity.Id != Guid.Empty)
             {
-                var myentity = Context.Suppliers.FirstOrDefault(x => x.Id==entity.Id);
+                var myentity = Context.Customers.FirstOrDefault(x => x.Id == entity.Id);
                 if (myentity != null)
                 {
                     Context.Entry(myentity).State = EntityState.Detached;
@@ -41,12 +42,12 @@ namespace SavuDiary.Server.DataLayers
             }
             return entity;
         }
-        public async Task<SupplierEntity> Delete(SupplierEntity entity)
+        public virtual async Task<TEnity> Delete(TEnity entity)
         {
             if (entity.Id != Guid.Empty)
             {
-                entity.IsActive = false; 
-                var myentity = Context.Suppliers.FirstOrDefault(x => x.Id == entity.Id);
+                entity.IsActive = false;
+                var myentity = Context.Customers.FirstOrDefault(x => x.Id == entity.Id);
                 if (myentity != null)
                 {
                     Context.Entry(myentity).State = EntityState.Detached;
@@ -58,20 +59,20 @@ namespace SavuDiary.Server.DataLayers
             return entity;
         }
 
-        public IQueryable<SupplierEntity> GetAll()
+        public virtual IEnumerable<TEnity> GetAll()
         {
-            return Context.Set<SupplierEntity>().AsNoTracking().AsQueryable();
+            return Context.Set<TEnity>().Where(x => x.IsActive).AsNoTracking().AsEnumerable();
         }
 
-        public Task<SupplierEntity> GetById(Guid id)
+        public virtual Task<TEnity> GetById(Guid id)
         {
-            var res = Context.Set<SupplierEntity>().Where(x => x.Id == id).AsNoTracking().FirstOrDefault();
+            var res = Context.Set<TEnity>().Where(x => x.Id == id).AsNoTracking().ToList().FirstOrDefault();
             if (res != null)
             {
                 return Task.FromResult(res);
 
             }
-            return Task.FromResult(new SupplierEntity());
+            return Task.FromResult(default(TEnity));
         }
 
         protected virtual void Dispose(bool disposing)
@@ -87,17 +88,22 @@ namespace SavuDiary.Server.DataLayers
         }
 
         // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        ~SupplierRepository()
+        ~BaseRepository()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: false);
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        public virtual IEnumerable<TEnity> Get(Expression<Func<TEnity, bool>> predicate)
+        {
+            return Context.Set<TEnity>().Where(predicate).AsEnumerable();
         }
     }
 }

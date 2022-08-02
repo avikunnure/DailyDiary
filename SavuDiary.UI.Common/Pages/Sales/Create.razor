@@ -1,0 +1,220 @@
+﻿@page "/sales/Create"
+@page "/sales/edit/{id:guid?}"
+@page "/sales/create/{CustomerNo:guid?}"
+@inject IDataServices<Customer> custDataServices
+@inject IDataServices<Sale> saleDataServices
+@inject IDataServices<Product> productServices
+@inject NavigationManager navigator
+
+<div class="card">
+    <EditForm Model="@model" OnValidSubmit="@OnSumbited">
+        <div class="card-header">
+            <div class="col-6">
+                <button class="btn btn-primary mx-1" type="submit"> Submit</button>
+                @if (id != Guid.Empty)
+                {
+                    <button class="btn btn-danger mx-1" type="button" @onclick="OnDelete">Delete</button>
+                }
+                <a href="sales" type="button" class="btn btn-info mx-1">
+                    List
+                </a>
+
+            </div>
+
+
+        </div>
+        <div class="card-body">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <div class="row">
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-1">
+                        <InputDate placeholder="SaleDateTime" class="form-control" @bind-Value="model.SaleDateTime"></InputDate>
+                        <label class="" for="SaleDateTime">DateTime</label>
+                        <ValidationMessage For="()=>model.SaleDateTime"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputSelect placeholder="CustomerId" class="form-select" @bind-Value="model.CustomerId">
+                            <option value="@Guid.Empty">
+                                -- None Select --
+                            </option>
+                            @foreach (var item in customers.OrderBy(x => x.SequenceNo))
+                            {
+                                <option value="@item.Id">
+                                    @($"{item.FirstName} {item.LastName} (Seq. No. : {item.SequenceNo})")
+                                </option>
+                            }
+                        </InputSelect>
+                        <label for="CustomerId">Customer</label>
+                        <ValidationMessage For="()=>model.CustomerId"></ValidationMessage>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="list-group">
+                    <div class="list-group-item list-group-item-padding">
+                        <button type="button" class="btn btn-sm btn-secondary" @onclick="AddNewHandle">
+                            + Add
+                        </button>
+                    </div>
+                    @foreach (var item in model.SaleDetailsList)
+                    {
+                        <SaleDetailRow CalculationChanged="ChangeCalculationHandler" Model="item"></SaleDetailRow>
+                    }
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputNumber placeholder="SaleAmount"
+                                     class="form-control"
+                                     @bind-Value="model.SaleAmount"
+                                     @onblur="ChangeCalculationHandler"
+                                     readonly />
+                        <label for="SaleAmount">SaleAmount</label>
+                        <ValidationMessage For="()=>model.SaleAmount" />
+                    </div>
+                </div>
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputNumber placeholder="DiscountAmount" class="form-control" @bind-Value="model.DiscountAmount" @onblur="ChangeCalculationHandler"></InputNumber>
+                        <label for="DiscountAmount">DiscountAmount</label>
+                        <ValidationMessage For="()=>model.DiscountAmount"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 ">
+                    <div class="form-floating mb-3">
+                        <InputNumber placeholder="NetAmount"
+                                     class="form-control"
+                                     @bind-Value="model.NetAmount"
+                                     @onblur="ChangeCalculationHandler"
+                                     readonly />
+                        <label for="NetAmount">Net Amount</label>
+                        <ValidationMessage For="()=>model.NetAmount" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+</div>
+@code {
+
+    [Parameter]
+    public Guid id { get; set; }
+
+    [Parameter]
+    public Guid CustomerNo { get; set; }
+    private Guid PrevCustomerNo { get; set; }
+    private Guid NextCustomerNo { get; set; }
+
+    private Sale model { get; set; } = new Sale();
+    private List<Customer> customers { get; set; } = new List<Customer>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != Guid.Empty)
+        {
+            var sale = await saleDataServices.Get(new DataParams("", id));
+            if (sale.Result != null)
+            {
+                model = sale.Result;
+            }
+        }
+        var cust = await custDataServices.GetAll();
+        if (cust.Result != null)
+        {
+            customers = cust.Result.ToList();
+        }
+        if (CustomerNo == Guid.Empty)
+        {
+            CustomerNo = customers.OrderBy(x => x.SequenceNo).First().Id;
+        }
+        else
+        {
+            var custemum = customers.OrderBy(x => x.SequenceNo).ToList();
+            var index = custemum.FindIndex(x => x.Id == CustomerNo);
+            PrevCustomerNo = index < 0
+                       ? Guid.Empty
+                       : custemum.ElementAt(index - 1).Id;
+            NextCustomerNo = index + 1 >= custemum.Count 
+                        ? Guid.Empty 
+                        : custemum.ElementAt(index + 1).Id;
+
+
+
+        }
+    }
+    protected async Task OnSumbited()
+    {
+        if (id != Guid.Empty)
+        {
+            var res = await saleDataServices.Put(model);
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    toaster.ShowToaster("Saved Successfully", ToastLevel.Success);
+                    navigator.NavigateTo("/sales");
+                }
+            }
+        }
+        else
+        {
+            var res = await saleDataServices.Post(model);
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    toaster.ShowToaster("Saved Successfully", ToastLevel.Success);
+                    navigator.NavigateTo("/sales");
+                }
+            }
+        }
+    }
+
+    public async void OnDelete()
+    {
+
+        var result = await swal.ShowConfirmBox("Sure to Delete", "Are you sure to delete record!\n Once record get delete cannot recover.");
+        if (result)
+        {
+            var res = await saleDataServices.Delete(model);
+            if (res != null)
+            {
+                if (res.IsSuccessStatusCode)
+                {
+                    toaster.ShowToaster("Deleted Successfully", ToastLevel.Success);
+                    navigator.NavigateTo("/sales");
+                }
+            }
+        }
+    }
+    protected Task AddNewHandle()
+    {
+        var detail = new SaleDetail()
+            {
+                Discount = 0,
+                Id = Guid.Empty,
+                IsActive = true,
+                NetAmount = 0,
+                Price = 0,
+                ProductId = Guid.Empty,
+                ProductName = "",
+                SaleId = model.Id,
+                Quantity = 0,
+                TotalAmount = 0,
+            };
+        model.SaleDetailsList.Add(detail);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task ChangeCalculationHandler()
+    {
+        model.SaleAmount = model.SaleDetailsList.Where(x => x.IsActive).Sum(x => x.NetAmount);
+        model.NetAmount = model.SaleAmount - model.DiscountAmount;
+        return Task.CompletedTask;
+    }
+}

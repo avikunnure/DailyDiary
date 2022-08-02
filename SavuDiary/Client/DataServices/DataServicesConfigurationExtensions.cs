@@ -12,6 +12,11 @@ namespace SavuDiary.Client
             services.AddTransient<IDataServices<Product>, ProductServices>();
             services.AddTransient<IDataServices<Customer>, CustomerServices>();
             services.AddTransient<IDataServices<Purchase>, PurchaseServices>();
+            services.AddTransient<IDataServices<TaxRuleModel>, TaxRuleModelServices>();
+            services.AddTransient<IDataServices<TaxRecordDetails>, TaxRecordDetailsServices>();
+            services.AddTransient<IDataServices<Template>, TemplateServices>();
+            services.AddTransient<IStockDataServices, StockMangementServices>();
+            services.AddTransient<ISaleDataServices, SaleServices>();
             return services;
         }
     }

@@ -5,7 +5,7 @@ namespace SavuDiary.Shared
     public class Sale:Base
     {
         public long SaleNo { get; set; }
-        public DateTime SaleDateTime { get; set; }
+        public DateTime SaleDateTime { get; set; } = DateTime.Now;
         public Guid CustomerId { get; set; }
         public Decimal SaleAmount { get; set; }
         public Decimal DiscountAmount { get; set; }

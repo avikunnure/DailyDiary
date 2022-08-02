@@ -1,0 +1,49 @@
+﻿@page "/templates"
+@inject IDataServices<Template> dataServices
+@inject NavigationManager nagivator
+<div class="card">
+    <div class="card-header">
+        <div class="col-12">
+            Templates >>
+            <a href="templates/create" type="button" class="btn btn-primary">
+                Create
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Product name</th>
+                    <th>Customer name</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ListOfTemplates)
+                {
+                   <tr @onclick='()=>nagivator.NavigateTo($"/templates/edit/{item.Id}")'>
+                       <td>
+                           @item.ProductName
+                       </td>
+                       <td>@item.CustomerName</td>
+                   </tr>
+               }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    protected List<Template> ListOfTemplates { get; set; } = new List<Template>();
+
+    protected override  async Task OnInitializedAsync()
+    {
+        var cust =await dataServices.GetAll();
+        if(cust.Result!=null)
+        {
+            ListOfTemplates = cust.Result.ToList();
+        }
+        
+    }
+}
